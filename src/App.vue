@@ -25,7 +25,6 @@ const bleCharacteristic = ref(null)
 const nextScan = ref(true)
 
 ipcRenderer.on('ble-scan-devices', (event, devices) => {
-  // store.updateScannedDevices(devices);
   store.addOrUpdateScannedDevice(devices[0]);
   nextScan.value = true;
 })
@@ -35,16 +34,12 @@ ipcRenderer.on('require-connect-request', (ev, deviceInfo) => {
     filters: [{ services: ['heart_rate'] }],
   })
   ble.value.then(device => {
-    console.log('connect', device);
     return device.gatt.connect();
   }).then(server => {
-    console.log('connect', server);
     return server.getPrimaryService('heart_rate');
   }).then(service => {
-    console.log('connect', service);
     return service.getCharacteristic('heart_rate_measurement');
   }).then(character => {
-    console.log('connect', character);
     bleCharacteristic.value = character;
     bleCharacteristic.value.startNotifications().then(_ => {
       store.updateIsConnected(true);
@@ -54,7 +49,7 @@ ipcRenderer.on('require-connect-request', (ev, deviceInfo) => {
     })
   }).catch(error => {
     store.updateIsConnected(false);
-    console.log('connect', error);
+    console.log(error);
   }).finally(() => {
     store.updateIsPerformingConnect(false);
   })
@@ -66,7 +61,6 @@ const handleCharacteristicValueChanged = (ev) => {
 }
 
 const scanDevice = () => {
-  console.log('performing scan');
   store.updateIsScanning(true);
   store.clearScannedDevices();
   let scanInterval = setInterval(() => {
@@ -74,14 +68,11 @@ const scanDevice = () => {
       nextScan.value = false
       ble.value = navigator.bluetooth.requestDevice({
         filters: [{ services: ['heart_rate'] }],
-        // acceptAllDevices: true,
       })
       ble.value.then(device => {
         device.gatt.connect();
-        // nextScan.value = false
       }).catch(e => {
         if (e.message.indexOf('Must be handling a user gesture') !== -1) {
-          console.log('Need user gueture');
           clearInterval(scanInterval)
           nextScan.value = true
           store.updateIsScanning(false)
@@ -97,7 +88,6 @@ const scanDevice = () => {
 
 watch(connectedDeviceName, v => {
   setTimeout(() => {
-    console.log('connectedDeviceName', v);
     if (refDeviceName.value.clientWidth > refDeviceNameWrapper.value.clientWidth) {
       refDeviceName.value.classList.add('infinite-scroll')
       refDeviceName.value.style.setProperty('--scroll-width', `-${refDeviceName.value.clientWidth - refDeviceNameWrapper.value.clientWidth}px`)
