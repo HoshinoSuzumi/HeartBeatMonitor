@@ -1,6 +1,6 @@
 {
   "appId": "com.uniiem.bleheart",
-  "productName": "BLE Heart Rate Monitor",
+  "productName": "HeartBeat Monitor",
   "copyright": "Copyright © 2022 ${author}",
   "asar": true,
   "directories": {
@@ -16,6 +16,7 @@
     ]
   },
   "win": {
+    "icon": "public/favicon_256.ico",
     "target": [
       {
         "target": "nsis",
@@ -30,10 +31,12 @@
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
+    "deleteAppDataOnUninstall": false,
+    "shortcutName": "心动值监测器",
+    "menuCategory": "UniiemSoft"
   },
   "squirrelWindows": {
-    "name": "BLE Heart Rate Monitor",
+    "name": "HeartBeatMonitor",
     "useAppIdAsId": true,
     "iconUrl": "https://uniiem.com/assets/wiki/ctfever/icon.svg",
     "msi": false
