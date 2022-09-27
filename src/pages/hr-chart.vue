@@ -1,18 +1,20 @@
 <script setup>
 import * as echarts from 'echarts';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onActivated, onDeactivated, ref, watch } from 'vue';
 import { computed } from '@vue/reactivity';
 import store from '../store/index';
-import { nextTick } from 'process';
 
 const isConnected = computed(() => store.connection.isConnected);
 const hrData = computed(() => store.data);
+
+const isActivated = ref(false);
 
 const refChart = ref();
 let hrChart = null;
 let xAxisData = [];
 
-onMounted(() => {
+onActivated(() => {
+    isActivated.value = true;
     const loadEChart = new Promise((resolve) => {
         resolve();
     });
@@ -31,9 +33,21 @@ onMounted(() => {
                     type: 'value',
                     scale: true,
                 },
+                legend: {
+                    bottom: 0,
+                    data: [
+                        {
+                            name: '心率',
+                        },
+                        {
+                            name: '平均值',
+                        }
+                    ]
+                },
                 series: [
                     {
-                        data: [0],
+                        // data: [0],
+                        name: '心率',
                         type: 'line',
                         symbol: 'none',
                         smooth: true,
@@ -47,9 +61,25 @@ onMounted(() => {
                             }])
                         },
                         lineStyle: {
-                            color: 'rgb(242, 94, 134)'
+                            cap: 'round',
+                            color: 'rgb(242, 94, 134)',
+                            shadowColor: 'rgba(242, 94, 134, 0.8)',
+                            shadowBlur: 4,
+                            shadowOffsetY: 2,
                         },
-                    }
+                    },
+                    {
+                        // data: [0],
+                        name: '平均值',
+                        type: 'line',
+                        symbol: 'none',
+                        smooth: true,
+                        lineStyle: {
+                            width: 1,
+                            type: 'dashed',
+                            color: 'rgba(242, 94, 134, .5)'
+                        },
+                    },
                 ]
             });
             window.onresize = function () {
@@ -59,7 +89,8 @@ onMounted(() => {
     }
 });
 
-onUnmounted(() => {
+onDeactivated(() => {
+    isActivated.value = false;
     if (hrChart) {
         hrChart.dispose();
     }
@@ -68,7 +99,8 @@ onUnmounted(() => {
 watch(hrData, v => {
     const time = new Date().toTimeString().split(' ')[0];
     xAxisData.push(time);
-    if (hrChart) {
+    let avgData = new Array(xAxisData.length).fill(v.avg);
+    if (hrChart && isActivated.value) {
         hrChart.setOption({
             xAxis: {
                 data: xAxisData.slice(-50)
@@ -76,6 +108,9 @@ watch(hrData, v => {
             series: [
                 {
                     data: v.history.slice(-50)
+                },
+                {
+                    data: avgData.slice(-50)
                 }
             ]
         });

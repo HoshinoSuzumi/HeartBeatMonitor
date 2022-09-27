@@ -137,7 +137,7 @@ watch(connectedDeviceName, v => {
       </div>
       <router-view v-slot="{Component}" @scan-device="scanDevice">
         <transition name="scale" mode="out-in">
-          <keep-alive :exclude="['hr-chart']">
+          <keep-alive :exclude="[]">
             <component :is="Component" />
           </keep-alive>
         </transition>
