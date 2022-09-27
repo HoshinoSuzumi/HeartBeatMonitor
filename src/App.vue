@@ -110,7 +110,7 @@ watch(connectedDeviceName, v => {
 
 <template>
   <div>
-    <div class="app-top-bar">BLE Monitor</div>
+    <div class="app-top-bar">心动值探测器</div>
 
     <div class="view-wrapper">
       <div class="drawer-bar">
