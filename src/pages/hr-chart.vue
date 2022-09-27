@@ -23,6 +23,9 @@ onActivated(() => {
             hrChart = echarts.init(refChart.value);
             hrChart.setOption({
                 tooltip: {},
+                textStyle: {
+                    fontFamily: 'MiSans',
+                },
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
@@ -42,7 +45,17 @@ onActivated(() => {
                         {
                             name: '平均值',
                         }
-                    ]
+                    ],
+                    lineStyle: {
+                        cap: 'round',
+                        shadowColor: 'rgba(242, 94, 134, 0.8)',
+                        shadowBlur: 4,
+                        shadowOffsetY: 2,
+                    },
+                    itemStyle: {
+                        opacity: 0,
+                    },
+                    itemGap: 14,
                 },
                 series: [
                     {
@@ -77,7 +90,7 @@ onActivated(() => {
                         lineStyle: {
                             width: 1,
                             type: 'dashed',
-                            color: 'rgba(242, 94, 134, .5)'
+                            color: 'rgba(242, 94, 134, .8)'
                         },
                     },
                 ]
