@@ -21,6 +21,7 @@ const connectedDeviceName = computed(() => store.connection.deviceName);
 const isPerformingConnect = computed(() => store.connection.isPerformingConnect);
 
 const ble = ref(null)
+const bleDevice = ref(null)
 const bleCharacteristic = ref(null)
 const nextScan = ref(true)
 
@@ -34,7 +35,9 @@ ipcRenderer.on('require-connect-request', (ev, deviceInfo) => {
     filters: [{ services: ['heart_rate'] }],
   })
   ble.value.then(device => {
-    return device.gatt.connect();
+    bleDevice.value = device;
+    bleDevice.value.addEventListener('gattserverdisconnected', (ev) => { store.updateIsConnected(false) });
+    return bleDevice.value.gatt.connect();
   }).then(server => {
     return server.getPrimaryService('heart_rate');
   }).then(service => {
@@ -86,14 +89,37 @@ const scanDevice = () => {
   }, 1000);
 }
 
+const performDisconnect = () => {
+  store.updateScannedDevices([]);
+  bleCharacteristic.value.stopNotifications().then(_ => {
+    bleDevice.value.gatt.disconnect();
+    store.updateConnectedDeviceName('');
+    store.updateConnectedDeviceId('');
+  }).catch(e => {
+    console.log(e);
+  }).finally(() => {
+    store.updateIsConnected(false);
+  })
+}
+
+const handleScrollTipRefresh = () => {
+  if (refDeviceName.value.clientWidth > refDeviceNameWrapper.value.clientWidth) {
+    refDeviceName.value.classList.add('infinite-scroll')
+    refDeviceName.value.style.setProperty('--scroll-width', `-${refDeviceName.value.clientWidth - refDeviceNameWrapper.value.clientWidth}px`)
+  } else {
+    refDeviceName.value.classList.remove('infinite-scroll')
+  }
+}
+
 watch(connectedDeviceName, v => {
   setTimeout(() => {
-    if (refDeviceName.value.clientWidth > refDeviceNameWrapper.value.clientWidth) {
-      refDeviceName.value.classList.add('infinite-scroll')
-      refDeviceName.value.style.setProperty('--scroll-width', `-${refDeviceName.value.clientWidth - refDeviceNameWrapper.value.clientWidth}px`)
-    } else {
-      refDeviceName.value.classList.remove('infinite-scroll')
-    }
+    handleScrollTipRefresh();
+  }, 100);
+})
+
+watch(isConnected, v => {
+  setTimeout(() => {
+    handleScrollTipRefresh();
   }, 100);
 })
 </script>
@@ -120,12 +146,13 @@ watch(connectedDeviceName, v => {
             </div>
           </div>
           <span class="device-wrapper" ref="refDeviceNameWrapper">
-            <span class="device" ref="refDeviceName">{{ isPerformingConnect ? '正在连接...' : isConnected ? connectedDeviceName : '未连接'
+            <span class="device" ref="refDeviceName">{{ isPerformingConnect ? '正在连接...' : isConnected ?
+            connectedDeviceName : '未连接'
             }}&nbsp;&nbsp;</span>
           </span>
         </div>
       </div>
-      <router-view v-slot="{Component}" @scan-device="scanDevice">
+      <router-view v-slot="{Component}" @scan-device="scanDevice" @perform-disconnect="performDisconnect">
         <transition name="scale" mode="out-in">
           <keep-alive :exclude="[]">
             <component :is="Component" />

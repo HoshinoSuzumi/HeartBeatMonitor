@@ -29,7 +29,11 @@ const performConnect = (device) => {
         </div>
         <div class="content">
             <div v-if="isConnected" class="empty">
-                {{ `已经连接到 ${store.connection.deviceName}` }}
+                <span>{{ `已经连接到 ${store.connection.deviceName}` }}</span>
+                <div class="horizon">
+                    <router-link class="btn outline" to="/hr-chart">查看心率曲线图</router-link>
+                    <button class="btn outline" @click="$emit('performDisconnect')">断开连接</button>
+                </div>
             </div>
             <div v-else-if="devicesList.length === 0" class="empty">
                 {{isScanning ? '正在扫描支持的设备...' : '没有发现设备'}}
