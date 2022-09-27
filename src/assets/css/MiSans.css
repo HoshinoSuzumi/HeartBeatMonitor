@@ -1,0 +1,23 @@
+@font-face {
+    font-family: MiSans;
+    src: local(MiSans), url('../fonts/MiSans-Regular.ttf');
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: MiSans;
+    src: local(MiSans), url('../fonts/MiSans-Medium.ttf');
+    font-display: swap;
+    font-weight: medium;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: MiSans;
+    src: local(MiSans), url('../fonts/MiSans-Bold.ttf');
+    font-display: swap;
+    font-weight: bold;
+    font-style: normal;
+}

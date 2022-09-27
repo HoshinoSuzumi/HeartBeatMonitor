@@ -1,0 +1,284 @@
+/**
+ * Variables
+ */
+:root {
+    --app-background: #f8f8f8;
+
+    --title-bar-background: #e4e4e4;
+    --title-bar-color: #F25E86;
+    --title-bar-height: 25px;
+
+    --drawer-bar-background: #eeeeee;
+    --drawer-bar-item-background: #eeeeee;
+    --drawer-bar-item-active-background: var(--content-background);
+
+    --content-background: var(--app-background);
+}
+
+/**
+ * Transition
+ */
+/* Slide left */
+.slide-left-enter-active,
+.slide-left-leave-active {
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    -webkit-transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    -moz-transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    -ms-transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    -o-transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+}
+
+.slide-left-enter {
+    opacity: 0;
+    transform: translate3d(10px, 0, 0);
+    -webkit-transform: translate3d(10px, 0, 0);
+    -moz-transform: translate3d(10px, 0, 0);
+    -ms-transform: translate3d(10px, 0, 0);
+    -o-transform: translate3d(10px, 0, 0);
+}
+
+.slide-left-leave-to {
+    display: none;
+    opacity: 0;
+    transform: translate3d(-10px, 0, 0);
+    -webkit-transform: translate3d(-10px, 0, 0);
+    -moz-transform: translate3d(-10px, 0, 0);
+    -ms-transform: translate3d(-10px, 0, 0);
+    -o-transform: translate3d(-10px, 0, 0);
+}
+
+/* Slide up */
+.slide-up-enter-active,
+.slide-up-leave-active {
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    -webkit-transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    -moz-transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    -ms-transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    -o-transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+}
+
+.slide-up-enter {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    -webkit-transform: translate3d(0, 10px, 0);
+    -moz-transform: translate3d(0, 10px, 0);
+    -ms-transform: translate3d(0, 10px, 0);
+    -o-transform: translate3d(0, 10px, 0);
+}
+
+.slide-up-leave-to {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0);
+    -webkit-transform: translate3d(0, -10px, 0);
+    -moz-transform: translate3d(0, -10px, 0);
+    -ms-transform: translate3d(0, -10px, 0);
+    -o-transform: translate3d(0, -10px, 0);
+}
+
+/* Scale */
+.scale-enter-active,
+.scale-leave-active {
+    transition: all 200ms ease;
+    -webkit-transition: all 200ms ease;
+    -moz-transition: all 200ms ease;
+    -ms-transition: all 200ms ease;
+    -o-transition: all 200ms ease;
+}
+
+
+.scale-enter-from,
+.scale-leave-to {
+    opacity: 0;
+    transform: scale(0.99);
+    -webkit-transform: scale(0.99);
+    -moz-transform: scale(0.99);
+    -ms-transform: scale(0.99);
+    -o-transform: scale(0.99);
+}
+
+/* Scale Slide */
+.scale-slide-enter-active,
+.scale-slide-leave-active {
+    position: absolute;
+    transition: all 0.85s ease;
+}
+
+.scale-slide-enter-from {
+    left: -100%;
+}
+
+.scale-slide-enter-to {
+    left: 0%;
+}
+
+.scale-slide-leave-from {
+    transform: scale(1);
+}
+
+.scale-slide-leave-to {
+    transform: scale(0.8);
+}
+
+/**
+ * Common style
+ */
+.container {
+    display: flex;
+    flex-direction: column;
+    width: calc(100%);
+    height: 100%;
+    margin-left: 120px;
+}
+
+.container .content {
+    padding: 10px;
+    height: 100%;
+}
+
+.container .content .empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgb(150, 150, 150);
+}
+
+.container .content .empty>*:not(:first-child) {
+    margin-top: 8px;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+}
+
+.header {
+    position: sticky;
+    top: var(--title-bar-height);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: linear-gradient(90deg, #f25e8500 0%, #f25e851c 50%, #f25e851c 100%);
+    background-color: var(--app-background);
+}
+
+.header .title {
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.header .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.header .actions .additional {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 12px;
+    color: rgb(150, 150, 150);
+}
+
+.additional>* {
+    margin-left: 4px;
+}
+
+.header .actions .additional .accent {
+    font-size: 22px;
+    font-weight: bold;
+    color: #F25E86;
+    margin-left: 6px;
+}
+
+.header .actions>*:first-child {
+    margin-left: 0;
+}
+
+.header .actions>* {
+    margin-left: 4px;
+}
+
+.btn {
+    border: none;
+    outline: none;
+    padding: 8px 10px;
+    min-width: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: MiSans, sans-serif;
+    font-size: 12px;
+    color: #fff;
+    background-color: #F25E86;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    box-shadow: 0 0 6px 1px rgb(0 0 0 / 20%);
+    transition: all .3s ease;
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    -ms-transition: all .3s ease;
+    -o-transition: all .3s ease;
+}
+
+.btn.outline {
+    background-color: transparent;
+    color: #F25E86;
+    border: 1px solid #F25E86;
+    box-shadow: none;
+}
+
+.btn:hover {
+    box-shadow: 2px 2px 6px 1px rgb(0 0 0 / 20%);
+}
+
+.btn:active {
+    box-shadow: 2px 2px 6px 1px rgb(0 0 0 / 20%), 2px 2px 6px 1px rgb(0 0 0 / 20%) inset;
+}
+
+.btn:disabled {
+    box-shadow: none;
+    background-color: rgba(0, 0, 0, 0.08);
+    color: #8f8f8f;
+    cursor: default;
+}
+
+.btn.outline:disabled {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/**
+ * Override
+ */
+* {
+    outline: none;
+    user-select: none;
+    user-zoom: none;
+    -webkit-user-drag: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
