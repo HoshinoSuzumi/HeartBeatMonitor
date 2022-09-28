@@ -96,9 +96,13 @@ async function createWindow() {
     win.webContents.send('require-connect-request', deviceInfo);
   })
 
+  // 将在这里分发心率值给其它组件
+  ipcMain.on('heart-rate-update', (rv, hr) => {
+    console.log(hr);
+  })
+
   win.addListener('close', (e) => {
     e.preventDefault();
-    console.log(e);
     win.hide();
   })
 }
