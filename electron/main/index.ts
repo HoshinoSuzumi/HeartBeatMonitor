@@ -125,8 +125,8 @@ app.whenReady().then(() => {
   ]);
 
   tray.setContextMenu(contextMenu);
-  tray.setToolTip('This is my application');
-  tray.setTitle('This is my title');
+  tray.setToolTip('心动值监测器!');
+  tray.setTitle('HeartBeat Monitor');
 
   tray.addListener('double-click', e => {
     createOrFocusWindow();

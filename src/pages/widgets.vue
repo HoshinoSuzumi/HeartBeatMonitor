@@ -5,7 +5,7 @@
 <template>
     <div class="container">
         <div class="header">
-            <h2 class="title">屏幕组件</h2>
+            <h2 class="title">桌面组件</h2>
         </div>
         <div class="content">
             <div class="empty">

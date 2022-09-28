@@ -4,13 +4,15 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import App from './App.vue'
 import index from './pages/index.vue'
 import hrChart from './pages/hr-chart.vue'
-import plugin from './pages/plugin.vue'
+import widgets from './pages/widgets.vue'
+import streamingPlugin from './pages/streaming-plugin.vue'
 import settings from './pages/settings.vue'
 
 const routes = [
   { path: '/', component: index },
   { path: '/hr-chart', component: hrChart },
-  { path: '/plugin', component: plugin },
+  { path: '/widgets', component: widgets },
+  { path: '/streaming-plugin', component: streamingPlugin },
   { path: '/settings', component: settings },
 ]
 

@@ -12,7 +12,8 @@ const refDeviceName = ref()
 const navList = ref([
   { title: '设备连接', path: '/' },
   { title: '心率曲线', path: '/hr-chart' },
-  { title: '心率组件', path: '/plugin' },
+  { title: '桌面组件', path: '/widgets' },
+  { title: '推流插件', path: '/streaming-plugin' },
   { title: '设置', path: '/settings' },
 ])
 
