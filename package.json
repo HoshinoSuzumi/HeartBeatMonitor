@@ -2,7 +2,7 @@
   "name": "heart-beat-monitor",
   "version": "1.1.2",
   "main": "dist/electron/main/index.js",
-  "description": "Connect BLE heart rate device.",
+  "description": "Display & Streaming your heart rate.",
   "author": "HoshinoSuzumi <master@uniiem.com>",
   "license": "MIT",
   "private": false,
