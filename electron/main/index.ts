@@ -12,7 +12,7 @@
 process.env.DIST = join(__dirname, '../..')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST, '../public')
 
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 
@@ -36,6 +36,7 @@ app.commandLine.appendSwitch('enable-experimental-web-platform-features', 'enabl
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 let win: BrowserWindow | null = null
+let tray: Tray | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL as string
@@ -96,7 +97,11 @@ async function createWindow() {
   })
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  createWindow();
+  const trayIcon = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon.ico'));
+  tray = new Tray(trayIcon);
+})
 
 app.on('window-all-closed', () => {
   win = null
