@@ -6,11 +6,17 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/HoshinoSuzumi/HeartBeatMonitor)](https://github.com/HoshinoSuzumi/HeartBeatMonitor/releases/latest)
 [![wakatime](https://wakatime.com/badge/user/589c46ee-6ba6-403c-bc9f-3a7aef5b206c/project/09dbf99c-f931-465c-829d-d1648bf7c4ef.svg)](https://wakatime.com/badge/user/589c46ee-6ba6-403c-bc9f-3a7aef5b206c/project/09dbf99c-f931-465c-829d-d1648bf7c4ef)
 
-**🚧 [WIP]** 蓝牙心率广播设备采集器、桌面悬浮窗和推流插件
+蓝牙心率广播设备采集器、桌面悬浮窗和推流插件
 
 ## 简介
 
 这个工具可以从低功耗蓝牙 (BLE) 心率广播设备采集数据，并显示到桌面悬浮窗或者推流插件。
+
+🚧 悬浮窗、推流插件功能正在开发中，很快就会发布 🚧
+
+## 使用
+
+项目目前处于早期开发的快速更新阶段，可以在 [**Jenkins**](http://ci.uniiem.com/job/HeartBeatMonitor/lastSuccessfulBuild/) 获取最新的开发板预览构建版本
 
 ## 截图
 
