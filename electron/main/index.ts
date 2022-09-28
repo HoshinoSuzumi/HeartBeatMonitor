@@ -12,7 +12,7 @@
 process.env.DIST = join(__dirname, '../..')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST, '../public')
 
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 
@@ -95,18 +95,48 @@ async function createWindow() {
   ipcMain.on('perform-connect', (ev, deviceInfo) => {
     win.webContents.send('require-connect-request', deviceInfo);
   })
+
+  win.addListener('close', (e) => {
+    e.preventDefault();
+    console.log(e);
+    win.hide();
+  })
+}
+
+const createOrFocusWindow = () => {
+  if (win) {
+    if (win.isMinimized()) win.restore()
+    if (!win.isVisible()) win.show()
+    win.focus()
+  } else {
+    createWindow();
+  }
 }
 
 app.whenReady().then(() => {
   createWindow();
   const trayIcon = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon.ico'));
   tray = new Tray(trayIcon);
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: '打开面板', type: 'normal', click: createOrFocusWindow },
+    { type: 'separator' },
+    { label: '退出程序', type: 'normal', click: () => { win.removeAllListeners(); app.quit() } },
+  ]);
+
+  tray.setContextMenu(contextMenu);
+  tray.setToolTip('This is my application');
+  tray.setTitle('This is my title');
+
+  tray.addListener('double-click', e => {
+    createOrFocusWindow();
+  })
 })
 
-app.on('window-all-closed', () => {
-  win = null
-  if (process.platform !== 'darwin') app.quit()
-})
+// app.on('window-all-closed', () => {
+//   // win = null
+//   // if (process.platform !== 'darwin') app.quit()
+// })
 
 app.on('second-instance', () => {
   if (win) {
