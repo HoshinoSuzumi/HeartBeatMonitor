@@ -161,7 +161,7 @@ async function createWindow() {
 
   // 将在这里分发心率值给其它组件
   ipcMain.on('heart-rate-broadcast', (ev, hr) => {
-    widgetWindow.webContents.send('heart-rate-broadcast', hr);
+    if (widgetWindow) widgetWindow.webContents.send('heart-rate-broadcast', hr);
   })
 
   win.addListener('close', (e) => {
