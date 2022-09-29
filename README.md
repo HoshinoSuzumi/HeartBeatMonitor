@@ -24,6 +24,10 @@
 
 ![心率曲线](https://raw.githubusercontents.com/HoshinoSuzumi/HoshinoSuzumi/master/images/202209282246455.png)
 
+![组件管理](https://raw.githubusercontents.com/HoshinoSuzumi/HoshinoSuzumi/master/images/202209300214121.png)
+
+![组件-心率指示器](https://raw.githubusercontents.com/HoshinoSuzumi/HoshinoSuzumi/master/images/202209300213199.png)
+
 ## 设备支持
 
 原理上这个程序支持所有不加密<sup>(1)</sup>的低功耗心率广播 (BLE heart_rate) 设备，例如心率环，消费市场的华为手环 7、华为 WATCH GT3 Pro 系列等。
