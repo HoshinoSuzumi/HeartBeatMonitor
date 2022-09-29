@@ -38,8 +38,6 @@
 华为 WATCH GT3|❌|非 Pro 款不含心率广播功能
 小米手环 5|❌|有加密
 
-### 角注
-
 <sup>(1)</sup> 本项目使用 Electron 开发，蓝牙设备接口使用的 [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API)，这个接口有局限性且不完善，所以很难支持带有加密的设备。Electron 可以调用 C++ 的方法，有能力实现的大佬欢迎 PR。也考虑后期开发配套 Android 应用程序透传数据。
 
 ## 贡献
