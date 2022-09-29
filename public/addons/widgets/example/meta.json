@@ -1,0 +1,11 @@
+{
+    "author": {
+        "name": "HoshinoSuzumi",
+        "email": "master@uniiem.com"
+    },
+    "name": "example",
+    "title": "示例组件",
+    "description": "这是一个示例组件",
+    "width": 120,
+    "height": 80
+}

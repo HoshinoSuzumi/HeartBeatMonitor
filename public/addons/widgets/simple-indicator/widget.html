@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <title>default widget</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            -webkit-app-region: drag;
+            user-select: none;
+        }
+        #widget {
+            overflow: hidden;
+            width: 60px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(242, 94, 134, .8);
+            border-radius: 4px;
+            color: #fff;
+            word-break: break-all;
+            backdrop-filter: blur(4px);
+        }
+
+        #hr {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="widget">
+        <span id="hr">--</span>
+    </div>
+
+    <script src="./widget.js"></script>
+</body>
+
+</html>

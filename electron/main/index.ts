@@ -12,9 +12,13 @@
 process.env.DIST = join(__dirname, '../..')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST, '../public')
 
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, screen } from 'electron'
+import remote from '@electron/remote/main';
 import { release } from 'os'
 import { join } from 'path'
+import { readdirSync, readFileSync } from 'fs';
+
+remote.initialize();
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -36,11 +40,17 @@ app.commandLine.appendSwitch('enable-experimental-web-platform-features', 'enabl
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 let win: BrowserWindow | null = null
+let widgetWindow: BrowserWindow | null = null
 let tray: Tray | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
-const url = process.env.VITE_DEV_SERVER_URL as string
-const indexHtml = join(process.env.DIST, 'index.html')
+
+const appUnpackagedUrl = process.env.VITE_DEV_SERVER_URL as string
+const appPackagedHtml = join(process.env.DIST, 'index.html')
+
+const widgetViewPath = (widgetName: string, entry: string = 'widget.html') => {
+  return join(app.isPackaged ? process.env.DIST : process.env.VITE_DEV_SERVER_URL, `addons/widgets/${widgetName}/${entry}`);
+}
 
 async function createWindow() {
   win = new BrowserWindow({
@@ -54,6 +64,7 @@ async function createWindow() {
       preload,
       nodeIntegration: true,
       contextIsolation: false,
+      devTools: !app.isPackaged
     },
     frame: true,
     titleBarOverlay: {
@@ -65,10 +76,9 @@ async function createWindow() {
   })
 
   if (app.isPackaged) {
-    win.loadFile(indexHtml)
+    win.loadFile(appPackagedHtml)
   } else {
-    win.loadURL(url)
-    // Open devTool if the app is not packaged
+    win.loadURL(appUnpackagedUrl)
     win.webContents.openDevTools()
   }
 
@@ -96,9 +106,62 @@ async function createWindow() {
     win.webContents.send('require-connect-request', deviceInfo);
   })
 
+  ipcMain.handle('request-widgets', ev => {
+    const widgetMetas = {};
+    readdirSync(app.isPackaged ? join(process.env.DIST, 'addons/widgets') : 'public/addons/widgets').forEach(dir => {
+      widgetMetas[dir] = JSON.parse(readFileSync(
+        app.isPackaged ? join(process.env.DIST, `addons/widgets/${dir}/meta.json`) : `public/addons/widgets/${dir}/meta.json`,
+        'utf-8'
+      ));
+    });
+    return widgetMetas;
+  })
+
+  ipcMain.on('create-widget', (ev, widgetMeta) => {
+    // TODO: 判断 widgetMeta 各项值是否 required
+    if (widgetWindow && widgetWindow.closable) {
+      widgetWindow.close();
+      widgetWindow = null;
+    }
+    if (!widgetMeta) return;
+    widgetWindow = new BrowserWindow({
+      width: widgetMeta.width,
+      height: widgetMeta.height,
+      type: 'toolbar',
+      frame: false,
+      resizable: false,
+      show: false,
+      alwaysOnTop: true,
+      transparent: true,
+      hasShadow: false,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+        devTools: !app.isPackaged,
+      },
+    });
+    remote.enable(widgetWindow.webContents);
+
+    widgetWindow.loadURL(widgetViewPath(widgetMeta.name));
+
+    const { paddingLeft, paddingTop } = {
+      paddingLeft: screen.getPrimaryDisplay().workAreaSize.width - widgetWindow.getSize()[0] - 80,
+      paddingTop: screen.getPrimaryDisplay().workAreaSize.height - widgetWindow.getSize()[1] - 80
+    }
+    widgetWindow.setPosition(paddingLeft, paddingTop);
+
+    widgetWindow.once('ready-to-show', () => {
+      widgetWindow.show();
+    });
+  })
+
+  ipcMain.on('request-stream-plugins', ev => { })
+
+  ipcMain.on('create-stream-plugin', (ev, streamPlugin) => { })
+
   // 将在这里分发心率值给其它组件
-  ipcMain.on('heart-rate-update', (rv, hr) => {
-    console.log(hr);
+  ipcMain.on('heart-rate-broadcast', (ev, hr) => {
+    widgetWindow.webContents.send('heart-rate-broadcast', hr);
   })
 
   win.addListener('close', (e) => {
@@ -168,9 +231,13 @@ ipcMain.handle('open-win', (event, arg) => {
   })
 
   if (app.isPackaged) {
-    childWindow.loadFile(indexHtml, { hash: arg })
+    childWindow.loadFile(appPackagedHtml, { hash: arg })
   } else {
-    childWindow.loadURL(`${url}/#${arg}`)
+    childWindow.loadURL(`${appUnpackagedUrl}/#${arg}`)
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
   }
 })
+
+ipcMain.on('open-explorer', (event, arg) => {
+  shell.openPath(arg)
+});

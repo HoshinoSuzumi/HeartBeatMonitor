@@ -62,7 +62,7 @@ ipcRenderer.on('require-connect-request', (ev, deviceInfo) => {
 const handleCharacteristicValueChanged = (ev) => {
   let hrValue = ev.target.value.getUint8(1);
   store.updateHR(hrValue);
-  ipcRenderer.send('heart-rate-update', hrValue);
+  ipcRenderer.send('heart-rate-broadcast', hrValue);
 }
 
 const scanDevice = () => {

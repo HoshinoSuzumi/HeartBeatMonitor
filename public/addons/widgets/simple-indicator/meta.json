@@ -1,0 +1,11 @@
+{
+    "author": {
+        "name": "HoshinoSuzumi",
+        "email": "master@uniiem.com"
+    },
+    "name": "simple-indicator",
+    "title": "心率指示器",
+    "description": "简单的心率指示器悬浮窗",
+    "width": 60,
+    "height": 30
+}

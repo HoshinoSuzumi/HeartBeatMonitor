@@ -9,5 +9,5 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true
   },
-  "include": ["package.json", "electron"]
+  "include": ["package.json", "electron", "addons"]
 }
