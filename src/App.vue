@@ -128,7 +128,10 @@ watch(isConnected, v => {
 
 <template>
   <div>
-    <div class="app-top-bar">心动值探测器</div>
+    <div class="app-top-bar">
+      <img class="icon" src="../public/favicon.ico" alt="icon">
+      <span>心动值探测器</span>
+    </div>
 
     <div class="view-wrapper">
       <div class="drawer-bar">
@@ -197,6 +200,10 @@ body {
   font-size: 12px;
   font-weight: bold;
   overflow: hidden;
+}
+
+.app-top-bar .icon {
+  height: calc(var(--title-bar-height) - 6px);
 }
 
 .view-wrapper {
