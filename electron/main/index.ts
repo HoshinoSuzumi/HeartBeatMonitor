@@ -67,12 +67,12 @@ async function createWindow() {
       devTools: !app.isPackaged
     },
     frame: true,
+    titleBarStyle: 'hidden',
     titleBarOverlay: {
       color: '#e4e4e4',
       symbolColor: '#F25E86',
       height: 25
     },
-    titleBarStyle: 'hidden'
   })
 
   if (app.isPackaged) {
