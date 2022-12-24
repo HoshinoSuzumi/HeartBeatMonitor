@@ -30,7 +30,7 @@
 
 ## 设备支持
 
-原理上这个程序支持所有不加密<sup>(1)</sup>的低功耗心率广播 (BLE heart_rate) 设备，例如心率环，消费市场的华为手环 7、华为 WATCH GT3 Pro 系列等。
+原理上这个程序支持所有不加密[^encryption]的低功耗心率广播 (BLE heart_rate) 设备，例如心率环，消费市场的华为手环 7、华为 WATCH GT3 Pro 系列等。
 
 因为我只有华为手环 7，所以目前只对这一种设备进行了测试。**如果您手里恰好有标称或带有“心率广播”功能的设备，希望您能够抽出一点时间帮助我完成测试，如果可以正常工作，请开 issue 告知我设备型号，谢谢！**
 
@@ -42,8 +42,6 @@
 华为 WATCH GT3|❌|非 Pro 款不含心率广播功能
 小米手环 5|❌|有加密
 
-<sup>(1)</sup> 本项目使用 Electron 开发，蓝牙设备接口使用的 [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API)，这个接口有局限性且不完善，所以很难支持带有加密的设备。Electron 可以调用 C++ 的方法，有能力实现的大佬欢迎 PR。也考虑后期开发配套 Android 应用程序透传数据。
-
 ## 贡献
 
 欢迎任何形式的 Issue, Pull Request。
@@ -52,3 +50,4 @@
 
 [^WIP]: 这些功能尚在开发中
 [^1]: 但我可能正在忙于其他事情:dove:
+[^encryption]: 本项目使用 Electron 开发，蓝牙设备接口使用的 [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API)，目前这个接口有非常大的局限性且不完善，很难支持带有加密的 BLE 设备。Electron 可以调用 C++ 的动态库，欢迎有能力实现的大佬 PR。也考虑后期开发配套 Android 应用程序透传数据。在找到更好的实现方法或学到更多技术之前，这个项目~可能需要~已经**暂时搁置**。
