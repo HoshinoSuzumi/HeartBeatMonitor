@@ -50,4 +50,4 @@
 
 [^WIP]: 这些功能尚在开发中
 [^1]: 但我可能正在忙于其他事情:dove:
-[^encryption]: 本项目使用 Electron 开发，蓝牙设备接口使用的 [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API)，目前这个接口有非常大的局限性且不完善，很难支持带有加密的 BLE 设备。Electron 可以调用 C++ 的动态库，欢迎有能力实现的大佬 PR。在找到更好的实现方法或学到更多技术之前，这个项目~可能需要~已经**暂时搁置**。也考虑后期开发配套 Android 应用程序透传数据。
+[^encryption]: 本项目使用 Electron 开发，蓝牙设备接口使用的 [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API)，目前这个接口有非常大的局限性且不完善，很难支持带有加密的 BLE 设备。Electron 可以调用 C++ 的动态库，欢迎有能力实现的大佬 PR。在找到更好的实现方法或学到更多技术之前，这个项目~可能需要~已经**暂时搁置**。也考虑开发配套 Android 应用程序透传数据。
