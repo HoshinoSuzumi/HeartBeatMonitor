@@ -1,0 +1,25 @@
+[package]
+name = "heartbeat-cat"
+version = "0.0.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1", features = [] }
+
+[dependencies]
+tauri = { version = "1", features = [ "window-show", "window-hide", "window-maximize", "window-unmaximize", "window-unminimize", "window-start-dragging", "window-minimize", "window-close", "shell-open"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+btleplug = { version = "0.11.5", features = ["serde"] }
+tokio = { version = "1.38.0", features = ["rt", "rt-multi-thread", "macros"] }
+futures = "0.3.30"
+uuid = "1.10.0"
+lazy_static = "1.5.0"
+
+[features]
+# This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
