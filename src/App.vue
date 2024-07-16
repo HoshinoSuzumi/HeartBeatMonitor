@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
+import { Device, useBrcatStore } from "./stores";
 
-invoke("request_central_events").then(res => {
-  console.log('central event listening', res);
-})
+const store = useBrcatStore();
+
+invoke("register_central_events");
 
 listen("heart-rate", (hr) => {
   console.log('Heart Rate', hr);
@@ -14,8 +15,13 @@ listen("scan-list-update", (event) => {
   console.log('scan-list-update', event.payload);
 })
 
+listen("device-discovered", (event) => {
+  const device = event.payload as Device
+  store.pushDevice(device);
+})
+
 listen("device-connected", (event) => {
-  console.log('device-connected', event);
+  console.log('device-connected', event.payload);
 })
 </script>
 
@@ -38,6 +44,7 @@ listen("device-connected", (event) => {
 @import './assets/css/style.css';
 
 :root {
+  --primary-color: #F25E86;
   --app-background: #f8f8f8;
 
   --title-bar-background: #e4e4e4;
@@ -49,6 +56,24 @@ listen("device-connected", (event) => {
   --drawer-bar-item-active-background: var(--content-background);
 
   --content-background: var(--app-background);
+}
+
+::-webkit-scrollbar {
+  --bar-width: 8px;
+  width: var(--bar-width);
+  height: var(--bar-width);
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  --bar-color: rgba(0, 0, 0, .2);
+  background-color: var(--bar-color);
+  border-radius: 20px;
+  background-clip: content-box;
+  border: 1px solid transparent;
 }
 
 /* Scale */

@@ -1319,7 +1319,7 @@ checksum = "e5274423e17b7c9fc20b6e7e208532f9b19825d82dfd615708b70edd83df41f1"
 
 [[package]]
 name = "heartbeat-cat"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "btleplug",
  "futures",

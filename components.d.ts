@@ -8,9 +8,18 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     DrawerContainer: typeof import('./src/components/DrawerContainer.vue')['default']
-    Greet: typeof import('./src/components/Greet.vue')['default']
+    PageContainer: typeof import('./src/components/PageContainer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SignalIndicator: typeof import('./src/components/SignalIndicator.vue')['default']
+    SystemUiconsSignalFull: typeof import('./src/components/icons/SystemUiconsSignalFull.vue')['default']
+    SystemUiconsSignalLow: typeof import('./src/components/icons/SystemUiconsSignalLow.vue')['default']
+    SystemUiconsSignalMedium: typeof import('./src/components/icons/SystemUiconsSignalMedium.vue')['default']
+    TablerBluetooth: typeof import('./src/components/icons/TablerBluetooth.vue')['default']
+    TablerBluetoothConnected: typeof import('./src/components/icons/TablerBluetoothConnected.vue')['default']
+    TablerBluetoothOff: typeof import('./src/components/icons/TablerBluetoothOff.vue')['default']
+    TablerBluetoothX: typeof import('./src/components/icons/TablerBluetoothX.vue')['default']
     TablerDeviceWatch: typeof import('./src/components/icons/TablerDeviceWatch.vue')['default']
+    TablerReload: typeof import('./src/components/icons/TablerReload.vue')['default']
   }
 }

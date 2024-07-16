@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useBrcatStore } from '../stores';
+
+const store = useBrcatStore();
 
 const navList = ref([
   { title: '设备连接', path: '/' },
@@ -14,13 +17,16 @@ const navList = ref([
   <div class="drawer">
     <div class="side">
       <div class="nav">
-        <router-link v-for="item in navList" :key="item.path" :to="item.path" class="nav-item"
-          active-class="active">
+        <router-link v-for="item in navList" :key="item.path" :to="item.path" class="nav-item" active-class="active">
           <span>{{ item.title }}</span>
         </router-link>
       </div>
       <div class="status">
-        status
+        <TablerBluetoothConnected v-if="store.is_connected" class="icon text-sm block -mt-0.5 text-emerald-500" />
+        <TablerBluetooth v-else class="icon text-sm block -mt-0.5 text-neutral-400" />
+        <span class="text" :title="store.is_connected ? store.connected_device?.name : undefined">
+          {{ store.is_connected ? store.connected_device?.name : '未连接' }}
+        </span>
       </div>
     </div>
     <div class="content">
@@ -37,19 +43,27 @@ const navList = ref([
 
   .side {
     background-color: var(--drawer-bar-background);
-    @apply w-[120px] flex flex-col;
+    @apply w-[120px] flex flex-col overflow-hidden;
 
     .nav {
       @apply flex-1 flex flex-col;
 
       .nav-item {
         background-color: var(--drawer-bar-item-background);
-        @apply flex justify-center items-center px-1 py-3.5 text-xs text-neutral-500 font-semibold transition-colors duration-150;
+        @apply flex justify-center items-center px-1 h-11 text-xs text-neutral-500 font-semibold transition-colors duration-150;
 
         &.active {
           /* background-color: var(--drawer-bar-item-active-background); */
-          @apply  text-pink-400 border-l-4 border-pink-400 bg-pink-400/10 pl-0;
+          @apply text-pink-400 border-l-4 border-pink-400 bg-pink-400/10 pl-0;
         }
+      }
+    }
+
+    .status {
+      @apply w-full h-8 bg-neutral-300 flex items-center text-neutral-900 px-2 text-2xs whitespace-nowrap flex-nowrap;
+
+      .text {
+        @apply flex-1 overflow-hidden text-ellipsis;
       }
     }
   }
