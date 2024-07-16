@@ -11,5 +11,6 @@ declare module 'vue' {
     Greet: typeof import('./src/components/Greet.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TablerDeviceWatch: typeof import('./src/components/icons/TablerDeviceWatch.vue')['default']
   }
 }

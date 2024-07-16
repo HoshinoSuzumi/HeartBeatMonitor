@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-user-drag: none;
+    @apply select-none;
+  }
+}
+
+@layer utilities {
+  .allow-drag {
+    -webkit-user-drag: auto;
+  }
+
+  .allow-select {
+    @apply select-text;
+  }
+}

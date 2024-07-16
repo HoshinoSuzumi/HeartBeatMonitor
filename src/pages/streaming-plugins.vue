@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+
 </script>
 
 <template>
   <div>
-    <Greet />
+    Streaming Plugins
   </div>
 </template>
 

@@ -3,7 +3,7 @@
 
 <template>
   <div>
-    <Greet />
+    Settings Page
   </div>
 </template>
 

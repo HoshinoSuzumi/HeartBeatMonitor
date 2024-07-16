@@ -1,10 +1,21 @@
 <script setup lang="ts">
+import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
-import { RouterView } from "vue-router";
-import DrawerContainer from "./components/DrawerContainer.vue";
+
+invoke("request_central_events").then(res => {
+  console.log('central event listening', res);
+})
 
 listen("heart-rate", (hr) => {
   console.log('Heart Rate', hr);
+})
+
+listen("scan-list-update", (event) => {
+  console.log('scan-list-update', event.payload);
+})
+
+listen("device-connected", (event) => {
+  console.log('device-connected', event);
 })
 </script>
 
@@ -13,7 +24,7 @@ listen("heart-rate", (hr) => {
     <DrawerContainer>
       <RouterView v-slot="{ Component }">
         <Transition name="scale" mode="out-in">
-          <KeepAlive>
+          <KeepAlive :exclude="['settings']">
             <component :is="Component" />
           </KeepAlive>
         </Transition>
@@ -23,6 +34,9 @@ listen("heart-rate", (hr) => {
 </template>
 
 <style>
+@import './assets/css/font.css';
+@import './assets/css/style.css';
+
 :root {
   --app-background: #f8f8f8;
 
@@ -65,13 +79,14 @@ body {
 }
 
 body {
+  font-family: Rubik, 'Noto Sans SC', sans-serif;
+  font-weight: 400;
   background-color: var(--app-background);
-  font-family: MiSans, sans-serif;
   border-radius: 8px;
   overflow: hidden;
 }
 
-.app-top-bar {
+.titlebar {
   -webkit-user-select: none;
   user-select: none;
   -webkit-app-region: drag;
@@ -90,7 +105,7 @@ body {
   overflow: hidden;
 }
 
-.app-top-bar .icon {
+.titlebar .icon {
   height: calc(var(--title-bar-height) - 6px);
 }
 </style>

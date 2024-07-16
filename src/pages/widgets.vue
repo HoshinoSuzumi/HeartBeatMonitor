@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+
 </script>
 
 <template>
   <div>
-    <Greet />
+    Widgets Page
   </div>
 </template>
 

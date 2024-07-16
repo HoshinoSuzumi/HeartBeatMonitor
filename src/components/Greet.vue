@@ -22,7 +22,7 @@ async function disconnect() {
 }
 
 async function scan() {
-  invoke("scan_devices").then(res => {
+  invoke("start_scan").then(res => {
     console.log(JSON.parse(res as string));
   })
 }
