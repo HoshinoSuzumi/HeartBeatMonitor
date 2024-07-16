@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, watchEffect } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
+import { useThrottleFn } from "@vueuse/core";
 
 export interface Device {
   name: string;
@@ -34,6 +35,12 @@ export const useBrcatStore = defineStore("brcat", () => {
     stopScan();
   });
 
+  const throttledSort = useThrottleFn(() => {
+    scanning_devices.value = scanning_devices.value.sort(
+      (a, b) => Math.round(b.rssi / 10) - Math.round(a.rssi / 10)
+    );
+  }, 2000);
+
   function pushDevice(device: Device) {
     if (scanning_devices.value.some((d) => d.address === device.address)) {
       scanning_devices.value = scanning_devices.value.map((d) =>
@@ -42,21 +49,18 @@ export const useBrcatStore = defineStore("brcat", () => {
     } else {
       scanning_devices.value.push(device);
     }
-    // scanning_devices.value = scanning_devices.value.sort(
-    //   (a, b) => b.rssi - a.rssi
-    // );
+
+    throttledSort();
   }
 
   function startScan() {
     invoke("start_scan");
     is_scanning.value = true;
-    console.log("start scan");
   }
 
   function stopScan() {
     invoke("stop_scan");
     is_scanning.value = false;
-    console.log("stop scan");
   }
 
   return {

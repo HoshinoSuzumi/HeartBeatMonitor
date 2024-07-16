@@ -23,6 +23,10 @@ listen("device-discovered", (event) => {
 listen("device-connected", (event) => {
   console.log('device-connected', event.payload);
 })
+
+listen("device-disconnected", (event) => {
+  console.log('device-disconnected', event.payload);
+})
 </script>
 
 <template>

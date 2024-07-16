@@ -154,10 +154,16 @@ impl BleConnection {
                             .emit_all("device-discovered", Some(device))
                             .unwrap();
                     }
-                    DeviceDisconnected(_) => {
-                        // 在这里引用 self
-                        let mut peripheral = self_clone.peripheral.lock().await;
-                        *peripheral = None;
+                    DeviceDisconnected(peripheral) => {
+                        let mut p = self_clone.peripheral.lock().await;
+                        if let Some(peri) = p.as_ref() {
+                            if peri.id() == peripheral {
+                                app_handle
+                                    .emit_all("device-disconnected", peripheral.to_string())
+                                    .unwrap();
+                                *p = None;
+                            }
+                        }
                     }
                     _ => {}
                 }

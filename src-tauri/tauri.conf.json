@@ -26,6 +26,9 @@
         "unmaximize": true,
         "unminimize": true,
         "startDragging": true
+      },
+      "dialog": {
+        "all": true
       }
     },
     "windows": [
