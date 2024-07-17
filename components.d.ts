@@ -26,6 +26,7 @@ declare module 'vue' {
     TablerCaretDownFilled: typeof import('./src/components/icons/TablerCaretDownFilled.vue')['default']
     TablerCaretUpFilled: typeof import('./src/components/icons/TablerCaretUpFilled.vue')['default']
     TablerDeviceWatch: typeof import('./src/components/icons/TablerDeviceWatch.vue')['default']
+    TablerHeartbeat: typeof import('./src/components/icons/TablerHeartbeat.vue')['default']
     TablerReload: typeof import('./src/components/icons/TablerReload.vue')['default']
   }
 }

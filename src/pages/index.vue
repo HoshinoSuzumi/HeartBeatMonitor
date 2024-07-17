@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { invoke } from '@tauri-apps/api/tauri';
-import { message } from '@tauri-apps/api/dialog';
 import { useBrcatStore } from '../stores';
-import { computed, h, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useSnackbar } from 'vue3-snackbar';
 
 const store = useBrcatStore();
@@ -37,21 +36,44 @@ onMounted(() => {
   <PageContainer title="设备连接" content-class="relative">
     <template #actions>
       <div class="flex">
-        <button class="text-[var(--primary-color)]"
+        <button class="text-[var(--primary-color)]" v-if="!store.is_connected"
           @click="() => store.is_scanning ? store.stopScan() : store.startScan()">
           <TablerReload :class="{ 'animate-spin': store.is_scanning }" />
         </button>
       </div>
     </template>
     <Transition name="fade">
-      <div v-if="store.is_connected" class="w-full h-full flex flex-col gap-4 justify-center items-center bg-white">
-        <TablerBluetoothConnected class="icon text-5xl text-emerald-500" />
-        <span class="flex flex-col items-center">
-          <span class="text-base font-semibold">{{ store.connected_device?.name }}</span>
-          <span class="text-sm font-semibold text-neutral-400">已连接到设备</span>
-        </span>
-        <div class="flex items-center gap-2">
+      <div v-if="store.is_connected" class="w-full h-full flex flex-col bg-white">
+        <div class="px-4 pl-3.5 py-2 border-b flex justify-between items-center">
+          <div class="flex items-center gap-1">
+            <TablerBluetoothConnected class="icon text-lg text-emerald-500" />
+            <span class="text-xs font-semibold text-neutral-500">已连接到 {{ store.connected_device?.name }}</span>
+          </div>
           <button class="btn outline" @click="invoke('disconnect')">断开连接</button>
+        </div>
+        <div class="flex-1 flex flex-col justify-center items-center px-4 py-2">
+          <img src="/favicon_256.ico" class="w-40 aspect-square opacity-30" />
+          <!-- <div class="w-full grid grid-cols-3 gap-4">
+
+            <div
+              class="px-4 py-3 rounded shadow-sm hover:shadow-md cursor-pointer transition bg-gradient-to-br from-neutral-50 to-primary-100">
+              <TablerHeartbeat class="text-primary text-5xl opacity-80 bg-primary-100 p-2 rounded-xl" />
+              <span class="text-sm font-semibold text-neutral-500">心率</span>
+            </div>
+
+            <div
+              class="px-4 py-3 rounded shadow-sm hover:shadow-md cursor-pointer transition bg-gradient-to-br from-neutral-50 to-primary-100">
+              <TablerHeartbeat class="text-primary text-5xl opacity-80 bg-primary-100 p-2 rounded-xl" />
+              <span class="text-sm font-semibold text-neutral-500">心率</span>
+            </div>
+
+            <div
+              class="px-4 py-3 rounded shadow-sm hover:shadow-md cursor-pointer transition bg-gradient-to-br from-neutral-50 to-primary-100">
+              <TablerHeartbeat class="text-primary text-5xl opacity-80 bg-primary-100 p-2 rounded-xl" />
+              <span class="text-sm font-semibold text-neutral-500">心率</span>
+            </div>
+
+          </div> -->
         </div>
       </div>
       <div v-else-if="store.is_scanning && scanning_devices.length === 0"
