@@ -2,26 +2,22 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
 import { Device, useBrcatStore } from "./stores";
+import { useSnackbar, Vue3Snackbar } from 'vue3-snackbar';
 
 const store = useBrcatStore();
+const snackbar = useSnackbar();
 
 invoke("register_central_events");
 
-listen("scan-list-update", (event) => {
-  console.log('scan-list-update', event.payload);
-})
-
 listen("device-discovered", (event) => {
-  const device = event.payload as Device
-  store.pushDevice(device);
+    store.pushDevice(event.payload as Device);
 })
 
-listen("device-connected", (event) => {
-  console.log('device-connected', event.payload);
-})
-
-listen("device-disconnected", (event) => {
-  console.log('device-disconnected', event.payload);
+listen("device-disconnected", (_) => {
+  snackbar.add({
+    type: 'warning',
+    text: '设备已断开连接',
+  })
 })
 </script>
 
@@ -36,6 +32,7 @@ listen("device-disconnected", (event) => {
         </Transition>
       </RouterView>
     </DrawerContainer>
+    <Vue3Snackbar bottom right shadow :duration="5000"></Vue3Snackbar>
   </div>
 </template>
 

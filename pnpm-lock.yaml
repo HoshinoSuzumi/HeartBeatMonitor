@@ -23,6 +23,9 @@ importers:
       vue-router:
         specifier: ^4.4.0
         version: 4.4.0(vue@3.4.31(typescript@5.5.3))
+      vue3-snackbar:
+        specifier: ^2.3.2
+        version: 2.3.2(vue@3.4.31(typescript@5.5.3))
     devDependencies:
       '@tauri-apps/cli':
         specifier: ^1
@@ -965,6 +968,9 @@ packages:
   thenify@3.3.1:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==}
 
+  tiny-emitter@2.1.0:
+    resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
+
   to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
@@ -1065,6 +1071,14 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
+
+  vue3-icon@2.1.0:
+    resolution: {integrity: sha512-cnFiGAEwzp/KQKody2Yj8cBDP4Kez0AUp5mDnp052FA1fECl8a9uYUKLaeRdH0JakmZ7Jfp3tdHbpBEWF9sgBA==}
+
+  vue3-snackbar@2.3.2:
+    resolution: {integrity: sha512-U5U8gJbt6NWNXT/e6lbuFGLuzmSuNSSnP0R+X+1RfqwyTLK3SYW5TFWH1IO5/eLezLUoOW6kHvEkixk/MUwnqw==}
+    peerDependencies:
+      vue: ^3.0.0
 
   vue@3.4.31:
     resolution: {integrity: sha512-njqRrOy7W3YLAlVqSKpBebtZpDVg21FPoaq1I7f/+qqBThK9ChAIjkRWgeP6Eat+8C+iia4P3OYqpATP21BCoQ==}
@@ -1920,6 +1934,8 @@ snapshots:
     dependencies:
       any-promise: 1.3.0
 
+  tiny-emitter@2.1.0: {}
+
   to-fast-properties@2.0.0: {}
 
   to-regex-range@5.0.1:
@@ -1997,6 +2013,14 @@ snapshots:
       '@vue/language-core': 2.0.26(typescript@5.5.3)
       semver: 7.6.2
       typescript: 5.5.3
+
+  vue3-icon@2.1.0: {}
+
+  vue3-snackbar@2.3.2(vue@3.4.31(typescript@5.5.3)):
+    dependencies:
+      tiny-emitter: 2.1.0
+      vue: 3.4.31(typescript@5.5.3)
+      vue3-icon: 2.1.0
 
   vue@3.4.31(typescript@5.5.3):
     dependencies:

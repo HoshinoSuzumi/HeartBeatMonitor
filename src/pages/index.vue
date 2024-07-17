@@ -2,9 +2,11 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { message } from '@tauri-apps/api/dialog';
 import { useBrcatStore } from '../stores';
-import { computed, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
+import { useSnackbar } from 'vue3-snackbar';
 
 const store = useBrcatStore();
+const snackbar = useSnackbar();
 const is_connecting = ref(false);
 
 const scanning_devices = computed(() => store.scanning_devices.filter(d => d.name !== 'Unknown'));
@@ -14,9 +16,9 @@ async function connect(address: String) {
   store.stopScan();
   invoke('connect', { address })
     .catch(err => {
-      message(`${err}`, {
+      snackbar.add({
         type: 'error',
-        title: '连接设备失败'
+        text: `连接设备失败: ${err}`
       });
       store.startScan();
     }).finally(() => {
