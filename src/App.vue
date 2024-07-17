@@ -7,10 +7,6 @@ const store = useBrcatStore();
 
 invoke("register_central_events");
 
-listen("heart-rate", (hr) => {
-  console.log('Heart Rate', hr);
-})
-
 listen("scan-list-update", (event) => {
   console.log('scan-list-update', event.payload);
 })
@@ -52,7 +48,7 @@ listen("device-disconnected", (event) => {
   --app-background: #f8f8f8;
 
   --title-bar-background: #e4e4e4;
-  --title-bar-color: #F25E86;
+  --title-bar-color: var(--primary-color);
   --title-bar-height: 25px;
 
   --drawer-bar-background: #eeeeee;

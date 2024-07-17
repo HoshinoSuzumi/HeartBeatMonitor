@@ -2,10 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use btleplug::api::bleuuid::uuid_from_u16;
-use btleplug::api::CentralEvent::{
-    DeviceConnected, DeviceDisconnected, DeviceDiscovered, DeviceUpdated,
-    ManufacturerDataAdvertisement, ServiceDataAdvertisement, ServicesAdvertisement,
-};
+use btleplug::api::CentralEvent::{DeviceDisconnected, DeviceDiscovered, DeviceUpdated};
 use btleplug::api::{BDAddr, Central, Manager as _, Peripheral as _, ScanFilter};
 use btleplug::platform::{Adapter, Manager as BtleManager, Peripheral, PeripheralId};
 use futures::StreamExt;
@@ -88,6 +85,7 @@ impl BleConnection {
         {
             return Err("Peripheral does not have the required service".into());
         }
+
         self.set_peripheral(Some(peripheral)).await;
 
         let peripheral = self.peripheral.lock().await;
@@ -110,6 +108,40 @@ impl BleConnection {
                 .rssi
                 .unwrap(),
         };
+
+        let service = peripheral
+            .as_ref()
+            .unwrap()
+            .services()
+            .into_iter()
+            .find(|s| s.uuid == uuid_from_u16(0x180D))
+            .unwrap();
+        let characteristic = service
+            .characteristics
+            .into_iter()
+            .find(|c| c.uuid == uuid_from_u16(0x2A37))
+            .unwrap();
+
+        let peripheral = peripheral.clone();
+        peripheral
+            .as_ref()
+            .unwrap()
+            .subscribe(&characteristic)
+            .await?;
+        let app_clone = app.clone();
+
+        tokio::spawn(async move {
+            let mut notification_stream =
+                peripheral.as_ref().unwrap().notifications().await.unwrap();
+            while let Some(notification) = notification_stream.next().await {
+                if notification.uuid == uuid_from_u16(0x2A37) {
+                    let value = notification.value;
+                    let heart_rate = value[1] as u16;
+                    app_clone.emit_all("heart-rate", heart_rate).unwrap();
+                }
+            }
+        });
+
         app.emit_all("device-connected", device).unwrap();
         Ok(())
     }
@@ -127,7 +159,7 @@ impl BleConnection {
         let app_handle = app.clone(); // Clone the AppHandle to move into the tokio::spawn closure
         let mut event_stream = central.as_ref().unwrap().events().await.unwrap();
 
-        let mut self_clone = self.clone(); // Clone the BleConnection to move into the tokio::spawn closure
+        let self_clone = self.clone(); // Clone the BleConnection to move into the tokio::spawn closure
 
         tokio::spawn(async move {
             while let Some(event) = event_stream.next().await {

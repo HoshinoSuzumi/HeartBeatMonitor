@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
-import { ref, watchEffect } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
+import { listen } from "@tauri-apps/api/event";
 import { useThrottleFn } from "@vueuse/core";
 
 export interface Device {
@@ -16,6 +17,16 @@ export const useBrcatStore = defineStore("brcat", () => {
   const connected_device = ref<Device | null>(null);
 
   const is_scanning = ref(false);
+
+  const current_heart_rate = ref<Number>(0);
+
+  onMounted(async () => {
+    const unlisten = await listen("heart-rate", (heart_rate) => {
+      current_heart_rate.value = heart_rate.payload as Number;
+    });
+
+    return unlisten;
+  })
 
   setInterval(async () => {
     is_connected.value = await invoke("is_connected");
@@ -64,6 +75,7 @@ export const useBrcatStore = defineStore("brcat", () => {
   }
 
   return {
+    current_heart_rate,
     is_connected,
     is_scanning,
     connected_device,

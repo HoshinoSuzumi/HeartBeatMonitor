@@ -18,10 +18,13 @@ declare module 'vue' {
     SystemUiconsSignalFull: typeof import('./src/components/icons/SystemUiconsSignalFull.vue')['default']
     SystemUiconsSignalLow: typeof import('./src/components/icons/SystemUiconsSignalLow.vue')['default']
     SystemUiconsSignalMedium: typeof import('./src/components/icons/SystemUiconsSignalMedium.vue')['default']
+    TablerActivityHeartbeat: typeof import('./src/components/icons/TablerActivityHeartbeat.vue')['default']
     TablerBluetooth: typeof import('./src/components/icons/TablerBluetooth.vue')['default']
     TablerBluetoothConnected: typeof import('./src/components/icons/TablerBluetoothConnected.vue')['default']
     TablerBluetoothOff: typeof import('./src/components/icons/TablerBluetoothOff.vue')['default']
     TablerBluetoothX: typeof import('./src/components/icons/TablerBluetoothX.vue')['default']
+    TablerCaretDownFilled: typeof import('./src/components/icons/TablerCaretDownFilled.vue')['default']
+    TablerCaretUpFilled: typeof import('./src/components/icons/TablerCaretUpFilled.vue')['default']
     TablerDeviceWatch: typeof import('./src/components/icons/TablerDeviceWatch.vue')['default']
     TablerReload: typeof import('./src/components/icons/TablerReload.vue')['default']
   }

@@ -15,7 +15,7 @@ defineProps({
 <template>
   <div class="flex flex-col h-full">
     <header
-      class="w-full h-11 px-4 flex justify-between items-center bg-gradient-to-r from-pink-50 to-pink-100 border-b">
+      class="w-full h-11 px-4 flex justify-between items-center bg-gradient-to-r from-primary-50 to-primary-100 border-b">
       <div class="flex flex-col gap-0.5">
         <h1 class="font-semibold text-neutral-900" :class="{ 'text-xs': !!subtitle, 'text-base': !subtitle }">
           {{ title }}

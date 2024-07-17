@@ -71,7 +71,6 @@
 }
 
 .btn {
-  border: none;
   outline: none;
   padding: 6px 12px;
   min-width: 30px;
@@ -79,7 +78,6 @@
   cursor: pointer;
   text-transform: uppercase;
   color: #fff;
-  background-color: #F25E86;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
@@ -90,22 +88,19 @@
   -moz-transition: all .3s ease;
   -ms-transition: all .3s ease;
   -o-transition: all .3s ease;
-  @apply text-xs;
+  @apply text-xs bg-primary border-0;
 }
 
 .btn.outline {
-  background-color: transparent;
-  color: #F25E86;
-  border: 1px solid #F25E86;
-  box-shadow: none;
+  @apply text-primary bg-transparent border border-primary shadow-none;
 }
 
 .btn:hover {
-  box-shadow: 2px 2px 6px 1px rgb(0 0 0 / 20%);
+  box-shadow: 2px 2px 6px 1px rgb(0 0 0 / .1);
 }
 
 .btn:active {
-  box-shadow: 2px 2px 6px 1px rgb(0 0 0 / 20%), 2px 2px 6px 1px rgb(0 0 0 / 20%) inset;
+  box-shadow: 2px 2px 6px 1px rgb(0 0 0 / .1), 2px 2px 6px 1px rgb(0 0 0 / .1) inset;
 }
 
 .btn:disabled {

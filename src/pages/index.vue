@@ -57,8 +57,7 @@ onMounted(() => {
         <SvgSpinnersPulse2 class="icon text-5xl text-neutral-400" />
         <span class="text-sm font-semibold text-neutral-400">正在扫描蓝牙设备</span>
       </div>
-      <div v-else-if="is_connecting"
-        class="w-full h-full flex flex-col gap-4 justify-center items-center">
+      <div v-else-if="is_connecting" class="w-full h-full flex flex-col gap-4 justify-center items-center">
         <SvgSpinnersWifiFade class="icon text-5xl text-neutral-400" />
         <span class="text-sm font-semibold text-neutral-400">正在连接到设备</span>
       </div>

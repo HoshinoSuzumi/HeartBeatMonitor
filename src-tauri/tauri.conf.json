@@ -6,8 +6,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "heartbeat-cat",
-    "version": "0.0.1"
+    "productName": "HBCat",
+    "version": "1.0.1"
   },
   "tauri": {
     "allowlist": {
@@ -37,7 +37,8 @@
         "minWidth": 800,
         "minHeight": 500,
         "width": 800,
-        "height": 500
+        "height": 500,
+        "userAgent": "Heartbeat Cat"
       }
     ],
     "security": {
@@ -47,9 +48,20 @@
       "active": true,
       "targets": "all",
       "identifier": "ga.bh8.heartbeat-cat",
+      "publisher": "TimothyYin",
+      "copyright": "2024 TimothyYin",
+      "category": "Utility",
+      "shortDescription": "HBCat",
+      "longDescription": "Catch your heartbeat",
       "icon": [
         "icons/icon.ico"
-      ]
+      ],
+      "windows": {
+        "nsis": {
+          "installerIcon": "icons/icon.ico",
+          "installMode": "both"
+        }
+      }
     }
   }
 }
