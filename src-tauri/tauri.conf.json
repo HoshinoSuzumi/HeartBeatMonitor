@@ -16,6 +16,14 @@
         "all": false,
         "open": true
       },
+      "fs": {
+        "scope": [
+          "$RESOURCE/*"
+        ]
+      },
+      "path": {
+        "all": true
+      },
       "window": {
         "all": false,
         "close": true,
@@ -25,7 +33,8 @@
         "minimize": true,
         "unmaximize": true,
         "unminimize": true,
-        "startDragging": true
+        "startDragging": true,
+        "create": true
       },
       "dialog": {
         "all": true
@@ -42,7 +51,16 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self' file://*",
+      "dangerousRemoteDomainIpcAccess": [
+        {
+          "domain": "file://*",
+          "enableTauriAPI": true,
+          "windows": [
+            "widget_example"
+          ]
+        }
+      ]
     },
     "bundle": {
       "active": true,
@@ -53,6 +71,9 @@
       "category": "Utility",
       "shortDescription": "HBCat",
       "longDescription": "Catch your heartbeat",
+      "resources": [
+        "addons/*"
+      ],
       "icon": [
         "icons/icon.ico"
       ],
