@@ -32,7 +32,7 @@ listen("device-disconnected", (_) => {
         </Transition>
       </RouterView>
     </DrawerContainer>
-    <Vue3Snackbar bottom right shadow :duration="5000"></Vue3Snackbar>
+    <Vue3Snackbar bottom right shadow dense :border="'left'" :duration="5000"></Vue3Snackbar>
   </div>
 </template>
 

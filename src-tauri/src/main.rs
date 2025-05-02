@@ -4,7 +4,7 @@
 use btleplug::api::bleuuid::uuid_from_u16;
 use btleplug::api::CentralEvent::{DeviceDisconnected, DeviceDiscovered, DeviceUpdated};
 use btleplug::api::{BDAddr, Central, Manager as _, Peripheral as _, ScanFilter};
-use btleplug::platform::{Adapter, Manager as BtleManager, Peripheral, PeripheralId};
+use btleplug::platform::{Adapter, Manager as BtleManager, Peripheral};
 use futures::StreamExt;
 use std::error::Error;
 use std::sync::Arc;
@@ -14,6 +14,7 @@ use tokio::sync::Mutex;
 
 #[derive(serde::Serialize, Clone)]
 struct BleDevice {
+    peripheral_id: String,
     name: String,
     address: BDAddr,
     rssi: i16,
@@ -67,14 +68,17 @@ impl BleConnection {
         peripheral.is_some()
     }
 
-    pub async fn connect(&self, address: BDAddr, app: &AppHandle) -> Result<(), Box<dyn Error>> {
+    pub async fn connect(&self, peripheral_id: String, app: &AppHandle) -> Result<(), Box<dyn Error>> {
         self.stop_scan().await.unwrap();
         let central = self.central.lock().await;
         let peripheral = central
             .as_ref()
             .unwrap()
-            .peripheral(&PeripheralId::from(address))
-            .await?;
+            .peripherals()
+            .await?
+            .into_iter()
+            .find(|p| p.id().to_string() == peripheral_id)
+            .ok_or_else(|| "5010")?;
         peripheral.connect().await?;
         peripheral.discover_services().await?;
         // 如果 peripheral.services() 不包含 0x180D 服务，则返回错误
@@ -83,13 +87,18 @@ impl BleConnection {
             .iter()
             .any(|s| s.uuid == uuid_from_u16(0x180D))
         {
-            return Err("Peripheral does not have the required service".into());
+            return Err("5011".into());
         }
 
         self.set_peripheral(Some(peripheral)).await;
 
         let peripheral = self.peripheral.lock().await;
         let device = BleDevice {
+            peripheral_id: peripheral
+                .as_ref()
+                .unwrap()
+                .id()
+                .to_string(),
             name: peripheral
                 .as_ref()
                 .unwrap()
@@ -106,7 +115,7 @@ impl BleConnection {
                 .await?
                 .unwrap()
                 .rssi
-                .unwrap(),
+                .unwrap_or(0)
         };
 
         let service = peripheral
@@ -136,7 +145,7 @@ impl BleConnection {
             while let Some(notification) = notification_stream.next().await {
                 if notification.uuid == uuid_from_u16(0x2A37) {
                     let value = notification.value;
-                    let heart_rate = value[1] as u16;
+                    let heart_rate = value[0] as u16;
                     app_clone.emit_all("heart-rate", heart_rate).unwrap();
                 }
             }
@@ -164,27 +173,24 @@ impl BleConnection {
         tokio::spawn(async move {
             while let Some(event) = event_stream.next().await {
                 match event {
-                    DeviceDiscovered(peripheral) | DeviceUpdated(peripheral) => {
+                    DeviceDiscovered(peripheral_id) | DeviceUpdated(peripheral_id) => {
                         let p = central_clone
                             .as_ref()
                             .unwrap()
-                            .peripheral(&peripheral)
+                            .peripheral(&peripheral_id)
                             .await
                             .unwrap();
-                        let device = BleDevice {
-                            name: p
-                                .properties()
-                                .await
-                                .unwrap()
-                                .unwrap()
-                                .local_name
-                                .unwrap_or("Unknown".to_string()),
-                            address: p.address(),
-                            rssi: p.properties().await.unwrap().unwrap().rssi.unwrap(),
-                        };
-                        app_handle
-                            .emit_all("device-discovered", Some(device))
-                            .unwrap();
+                        if let Ok(Some(props)) = p.properties().await {
+                            let name = props.local_name.unwrap_or("Unknown".to_string());
+                            let rssi = props.rssi.unwrap_or(0);
+                            let device = BleDevice {
+                                peripheral_id: peripheral_id.to_string(),
+                                name,
+                                address: props.address,
+                                rssi,
+                            };
+                            let _ = app_handle.emit_all("device-discovered", Some(device));
+                        }
                     }
                     DeviceDisconnected(peripheral) => {
                         let mut p = self_clone.peripheral.lock().await;
@@ -256,6 +262,11 @@ async fn is_connected(connection: State<'_, BleConnection>) -> Result<bool, Stri
 async fn get_connected_device(connection: State<'_, BleConnection>) -> Result<BleDevice, String> {
     let peripheral = connection.peripheral.lock().await;
     let device = BleDevice {
+        peripheral_id: peripheral
+            .as_ref()
+            .unwrap()
+            .id()
+            .to_string(),
         name: peripheral
             .as_ref()
             .unwrap()
@@ -274,18 +285,18 @@ async fn get_connected_device(connection: State<'_, BleConnection>) -> Result<Bl
             .unwrap()
             .unwrap()
             .rssi
-            .unwrap(),
+            .unwrap_or(0),
     };
     Ok(device)
 }
 
 #[tauri::command]
 async fn connect(
-    address: BDAddr,
+    peripheral_id: String,
     connection: State<'_, BleConnection>,
     app_handle: AppHandle,
 ) -> Result<bool, String> {
-    if let Err(e) = connection.connect(address, &app_handle).await {
+    if let Err(e) = connection.connect(peripheral_id, &app_handle).await {
         Err(e.to_string())
     } else {
         Ok(true)

@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { useBrcatStore } from '../stores';
 import { computed, onMounted, ref } from 'vue';
 import { useSnackbar } from 'vue3-snackbar';
+import { useErrno } from '../composables/useErrno';
 
 const store = useBrcatStore();
 const snackbar = useSnackbar();
@@ -10,14 +11,14 @@ const is_connecting = ref(false);
 
 const scanning_devices = computed(() => store.scanning_devices.filter(d => d.name !== 'Unknown'));
 
-async function connect(address: String) {
+async function connect(peripheral_id: String) {
   is_connecting.value = true;
   store.stopScan();
-  invoke('connect', { address })
-    .catch(err => {
+  invoke('connect', { peripheralId: peripheral_id })
+    .catch(errno => {
       snackbar.add({
         type: 'error',
-        text: `连接设备失败: ${err}`
+        text: useErrno(errno),
       });
       store.startScan();
     }).finally(() => {
@@ -51,29 +52,24 @@ onMounted(() => {
           </div>
           <button class="btn outline" @click="invoke('disconnect')">断开连接</button>
         </div>
-        <div class="flex-1 flex flex-col justify-center items-center px-4 py-2">
+        <div class="flex-1 flex flex-col justify-center items-center px-4 py-2 gap-2">
           <img src="/favicon_256.ico" class="w-40 aspect-square opacity-30" />
-          <!-- <div class="w-full grid grid-cols-3 gap-4">
+          <!-- TODO: Features entry (grid) -->
+          <div class="w-7/12 grid-cols-2 gap-4 hidden">
 
             <div
-              class="px-4 py-3 rounded shadow-sm hover:shadow-md cursor-pointer transition bg-gradient-to-br from-neutral-50 to-primary-100">
+              class="p-3 pr-6 flex items-center justify-between gap-2 rounded-lg shadow-sm hover:shadow-md cursor-pointer transition bg-gradient-to-br from-neutral-50 to-primary-100">
               <TablerHeartbeat class="text-primary text-5xl opacity-80 bg-primary-100 p-2 rounded-xl" />
-              <span class="text-sm font-semibold text-neutral-500">心率</span>
+              <span class="text-lg text-primary-400 pl-1">心率</span>
             </div>
 
             <div
-              class="px-4 py-3 rounded shadow-sm hover:shadow-md cursor-pointer transition bg-gradient-to-br from-neutral-50 to-primary-100">
+              class="p-3 pr-6 flex items-center justify-between gap-2 rounded-lg shadow-sm hover:shadow-md cursor-pointer transition bg-gradient-to-br from-neutral-50 to-primary-100">
               <TablerHeartbeat class="text-primary text-5xl opacity-80 bg-primary-100 p-2 rounded-xl" />
-              <span class="text-sm font-semibold text-neutral-500">心率</span>
+              <span class="text-lg text-primary-400 pl-1">心率</span>
             </div>
 
-            <div
-              class="px-4 py-3 rounded shadow-sm hover:shadow-md cursor-pointer transition bg-gradient-to-br from-neutral-50 to-primary-100">
-              <TablerHeartbeat class="text-primary text-5xl opacity-80 bg-primary-100 p-2 rounded-xl" />
-              <span class="text-sm font-semibold text-neutral-500">心率</span>
-            </div>
-
-          </div> -->
+          </div>
         </div>
       </div>
       <div v-else-if="store.is_scanning && scanning_devices.length === 0"
@@ -89,7 +85,7 @@ onMounted(() => {
         <div class="flex flex-col gap-2 relative">
           <TransitionGroup name="scan-device">
             <ScanningDevice v-for="(device, _) in scanning_devices.filter(d => d.name !== 'Unknown')"
-              :key="device.address" :device="device" @connect="connect" />
+              :key="device.peripheral_id" :device="device" @connect="connect" />
           </TransitionGroup>
         </div>
       </div>

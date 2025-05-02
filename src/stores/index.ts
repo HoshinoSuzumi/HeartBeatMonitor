@@ -5,6 +5,7 @@ import { listen } from "@tauri-apps/api/event";
 import { useThrottleFn, useDebounceFn } from "@vueuse/core";
 
 export interface Device {
+  peripheral_id: string;
   name: string;
   address: string;
   rssi: number;
@@ -58,13 +59,15 @@ export const useBrcatStore = defineStore("brcat", () => {
   }, 2000);
 
   function pushDevice(device: Device) {
-    if (scanning_devices.value.some((d) => d.address === device.address)) {
+    if (scanning_devices.value.some((d) => d.peripheral_id === device.peripheral_id)) {
       scanning_devices.value = scanning_devices.value.map((d) =>
-        d.address === device.address ? device : d
+        d.peripheral_id === device.peripheral_id ? device : d
       );
     } else {
       scanning_devices.value.push(device);
     }
+
+    console.log(device);
 
     throttledSort();
   }
