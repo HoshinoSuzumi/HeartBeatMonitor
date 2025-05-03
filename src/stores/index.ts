@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { onMounted, ref, watchEffect } from "vue";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { useThrottleFn, useDebounceFn } from "@vueuse/core";
 
@@ -66,8 +66,6 @@ export const useBrcatStore = defineStore("brcat", () => {
     } else {
       scanning_devices.value.push(device);
     }
-
-    console.log(device);
 
     throttledSort();
   }

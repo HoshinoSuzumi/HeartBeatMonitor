@@ -7,12 +7,13 @@ use btleplug::api::{BDAddr, Central, Manager as _, Peripheral as _, ScanFilter};
 use btleplug::platform::{Adapter, Manager as BtleManager, Peripheral};
 use futures::StreamExt;
 use std::error::Error;
+use tauri::path::BaseDirectory;
 use std::sync::Arc;
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 use tokio;
 use tokio::sync::Mutex;
 
-#[derive(serde::Serialize, Clone)]
+#[derive(serde::Serialize, Clone, Debug)]
 struct BleDevice {
     peripheral_id: String,
     name: String,
@@ -68,7 +69,11 @@ impl BleConnection {
         peripheral.is_some()
     }
 
-    pub async fn connect(&self, peripheral_id: String, app: &AppHandle) -> Result<(), Box<dyn Error>> {
+    pub async fn connect(
+        &self,
+        peripheral_id: String,
+        app: &AppHandle,
+    ) -> Result<(), Box<dyn Error>> {
         self.stop_scan().await.unwrap();
         let central = self.central.lock().await;
         let peripheral = central
@@ -94,11 +99,7 @@ impl BleConnection {
 
         let peripheral = self.peripheral.lock().await;
         let device = BleDevice {
-            peripheral_id: peripheral
-                .as_ref()
-                .unwrap()
-                .id()
-                .to_string(),
+            peripheral_id: peripheral.as_ref().unwrap().id().to_string(),
             name: peripheral
                 .as_ref()
                 .unwrap()
@@ -115,7 +116,7 @@ impl BleConnection {
                 .await?
                 .unwrap()
                 .rssi
-                .unwrap_or(0)
+                .unwrap_or(0),
         };
 
         let service = peripheral
@@ -146,12 +147,12 @@ impl BleConnection {
                 if notification.uuid == uuid_from_u16(0x2A37) {
                     let value = notification.value;
                     let heart_rate = value[0] as u16;
-                    app_clone.emit_all("heart-rate", heart_rate).unwrap();
+                    app_clone.emit("heart-rate", heart_rate).unwrap();
                 }
             }
         });
 
-        app.emit_all("device-connected", device).unwrap();
+        app.emit("device-connected", device).unwrap();
         Ok(())
     }
 
@@ -189,7 +190,7 @@ impl BleConnection {
                                 address: props.address,
                                 rssi,
                             };
-                            let _ = app_handle.emit_all("device-discovered", Some(device));
+                            let _ = app_handle.emit("device-discovered", Some(device));
                         }
                     }
                     DeviceDisconnected(peripheral) => {
@@ -197,7 +198,7 @@ impl BleConnection {
                         if let Some(peri) = p.as_ref() {
                             if peri.id() == peripheral {
                                 app_handle
-                                    .emit_all("device-disconnected", peripheral.to_string())
+                                    .emit("device-disconnected", peripheral.to_string())
                                     .unwrap();
                                 *p = None;
                             }
@@ -262,11 +263,7 @@ async fn is_connected(connection: State<'_, BleConnection>) -> Result<bool, Stri
 async fn get_connected_device(connection: State<'_, BleConnection>) -> Result<BleDevice, String> {
     let peripheral = connection.peripheral.lock().await;
     let device = BleDevice {
-        peripheral_id: peripheral
-            .as_ref()
-            .unwrap()
-            .id()
-            .to_string(),
+        peripheral_id: peripheral.as_ref().unwrap().id().to_string(),
         name: peripheral
             .as_ref()
             .unwrap()
@@ -312,6 +309,11 @@ async fn disconnect(connection: State<'_, BleConnection>) -> Result<bool, String
     }
 }
 
+#[tauri::command]
+fn get_widget_url() -> String {
+    "http://127.0.0.1:9918/".into()
+}
+
 #[tokio::main]
 async fn main() {
     let ble_manager = BtleManager::new().await.unwrap();
@@ -332,8 +334,29 @@ async fn main() {
             is_connected,
             connect,
             disconnect,
-            get_connected_device
+            get_connected_device,
+            get_widget_url
         ])
+        .setup(move |app: &mut tauri::App| {
+            let app_handle: tauri::AppHandle = app.handle().clone();
+            std::thread::spawn(move || {
+                // 在子线程新建 tokio runtime
+                let rt = tokio::runtime::Runtime::new().unwrap();
+                rt.block_on(async move {
+                    // 取到打包后资源目录
+                    let widget_path: std::path::PathBuf = app_handle
+                        .path()
+                        .resolve("addons/widgets/example/dist", BaseDirectory::Resource)
+                        .unwrap();
+                    println!("widget_path: {:?}", widget_path);
+                    // 启动 HTTP 静态服务器，监听 127.0.0.1:1340
+                    warp::serve(warp::fs::dir(widget_path))
+                        .run(([127, 0, 0, 1], 9918))
+                        .await;
+                });
+            });
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

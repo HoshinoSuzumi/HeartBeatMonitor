@@ -1,0 +1,25 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "windows": [
+    "*"
+  ],
+  "webviews": [
+    "*"
+  ],
+  "remote": {
+    "urls": [
+      "http://127.0.0.1:9918"
+    ]
+  },
+  "permissions": [
+    "core:path:default",
+    "core:event:allow-listen",
+    "core:event:default",
+    "core:webview:allow-create-webview",
+    "core:window:default",
+    "core:window:allow-start-dragging",
+    "core:window:allow-create",
+    "core:window:allow-close"
+  ]
+}

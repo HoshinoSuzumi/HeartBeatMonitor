@@ -10,7 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.6.0",
+    "@tauri-apps/api": "^2.5.0",
     "@vueuse/core": "^10.11.0",
     "pinia": "^2.1.7",
     "vue": "^3.4.31",
@@ -18,7 +18,7 @@
     "vue3-snackbar": "^2.3.2"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.6.0",
+    "@tauri-apps/cli": "^2.5.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.39",

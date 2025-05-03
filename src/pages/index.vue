@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import { useBrcatStore } from '../stores';
 import { computed, onMounted, ref } from 'vue';
 import { useSnackbar } from 'vue3-snackbar';

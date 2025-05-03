@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { invoke } from "@tauri-apps/api/tauri";
-import { listen } from "@tauri-apps/api/event";
-import { Device, useBrcatStore } from "./stores";
-import { useSnackbar, Vue3Snackbar } from 'vue3-snackbar';
+import { invoke } from '@tauri-apps/api/core'
+import { listen } from '@tauri-apps/api/event'
+import { Device, useBrcatStore } from './stores'
+import { useSnackbar, Vue3Snackbar } from 'vue3-snackbar'
 
-const store = useBrcatStore();
-const snackbar = useSnackbar();
+const store = useBrcatStore()
+const snackbar = useSnackbar()
 
-invoke("register_central_events");
+invoke('register_central_events')
 
-listen("device-discovered", (event) => {
-    store.pushDevice(event.payload as Device);
+listen('device-discovered', (event) => {
+  store.pushDevice(event.payload as Device)
 })
 
-listen("device-disconnected", (_) => {
+listen('device-disconnected', (_) => {
   snackbar.add({
     type: 'warning',
     text: '设备已断开连接',
@@ -25,14 +25,24 @@ listen("device-disconnected", (_) => {
   <div>
     <DrawerContainer>
       <RouterView v-slot="{ Component }">
-        <Transition name="scale" mode="out-in">
+        <Transition
+          name="scale"
+          mode="out-in"
+        >
           <KeepAlive :exclude="['settings']">
             <component :is="Component" />
           </KeepAlive>
         </Transition>
       </RouterView>
     </DrawerContainer>
-    <Vue3Snackbar bottom right shadow dense :border="'left'" :duration="5000"></Vue3Snackbar>
+    <Vue3Snackbar
+      bottom
+      right
+      shadow
+      dense
+      :border="'left'"
+      :duration="5000"
+    ></Vue3Snackbar>
   </div>
 </template>
 
@@ -41,7 +51,7 @@ listen("device-disconnected", (_) => {
 @import './assets/css/style.css';
 
 :root {
-  --primary-color: #F25E86;
+  --primary-color: #f25e86;
   --app-background: #f8f8f8;
 
   --title-bar-background: #e4e4e4;
@@ -66,7 +76,7 @@ listen("device-disconnected", (_) => {
 }
 
 ::-webkit-scrollbar-thumb {
-  --bar-color: rgba(0, 0, 0, .2);
+  --bar-color: rgba(0, 0, 0, 0.2);
   background-color: var(--bar-color);
   border-radius: 20px;
   background-clip: content-box;
@@ -82,7 +92,6 @@ listen("device-disconnected", (_) => {
   -ms-transition: all 200ms ease;
   -o-transition: all 200ms ease;
 }
-
 
 .scale-enter-from,
 .scale-leave-to {

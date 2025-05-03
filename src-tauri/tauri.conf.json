@@ -1,45 +1,14 @@
 {
+  "productName": "HeartBeatCat",
+  "version": "1.1.0",
+  "identifier": "ga.bh8.heartbeat-cat",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "HBCat",
-    "version": "1.0.1"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "fs": {
-        "scope": [
-          "$RESOURCE/*"
-        ]
-      },
-      "path": {
-        "all": true
-      },
-      "window": {
-        "all": false,
-        "close": true,
-        "hide": true,
-        "show": true,
-        "maximize": true,
-        "minimize": true,
-        "unmaximize": true,
-        "unminimize": true,
-        "startDragging": true,
-        "create": true
-      },
-      "dialog": {
-        "all": true
-      }
-    },
+  "app": {
     "windows": [
       {
         "title": "Heartbeat Cat",
@@ -51,37 +20,27 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self' file://*",
-      "dangerousRemoteDomainIpcAccess": [
-        {
-          "domain": "file://*",
-          "enableTauriAPI": true,
-          "windows": [
-            "widget_example"
-          ]
-        }
-      ]
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "ga.bh8.heartbeat-cat",
-      "publisher": "TimothyYin",
-      "copyright": "2024 TimothyYin",
-      "category": "Utility",
-      "shortDescription": "HBCat",
-      "longDescription": "Catch your heartbeat",
-      "resources": [
-        "addons/*"
-      ],
-      "icon": [
-        "icons/icon.ico"
-      ],
-      "windows": {
-        "nsis": {
-          "installerIcon": "icons/icon.ico",
-          "installMode": "both"
-        }
+      "csp": "default-src 'self' http://127.0.0.1:9918; script-src 'self' http://127.0.0.1:9918 'unsafe-inline' 'unsafe-eval'; object-src 'none';"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "publisher": "TimothyYin",
+    "copyright": "2025 TimothyYin",
+    "category": "Utility",
+    "shortDescription": "HBCat",
+    "longDescription": "Catch your heartbeat",
+    "icon": [
+      "icons/icon.ico"
+    ],
+    "resources": [
+      "addons"
+    ],
+    "windows": {
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "installMode": "both"
       }
     }
   }
