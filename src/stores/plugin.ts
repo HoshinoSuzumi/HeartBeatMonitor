@@ -20,6 +20,7 @@ export interface PluginManifest {
     width: number;
     height: number;
   };
+  isActivated?: boolean;
 }
 
 export const usePluginManager = defineStore('pluginManager', () => {
@@ -76,7 +77,10 @@ export const usePluginManager = defineStore('pluginManager', () => {
       if (index === -1) {
         plugins.value.push(plugin)
       } else {
-        plugins.value[index] = plugin
+        plugins.value[index] = {
+          ...plugins.value[index],
+          ...plugin,
+        }
       }
     }
   }

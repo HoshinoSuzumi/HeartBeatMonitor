@@ -12,6 +12,7 @@ use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Emitter, Manager, State, TitleBarStyle, WebviewUrl, WebviewWindowBuilder};
 use tokio;
 use tokio::sync::Mutex;
+use warp::Filter;
 
 #[derive(serde::Serialize, Clone, Debug)]
 struct BleDevice {
@@ -146,7 +147,11 @@ impl BleConnection {
             while let Some(notification) = notification_stream.next().await {
                 if notification.uuid == uuid_from_u16(0x2A37) {
                     let value = notification.value;
-                    let heart_rate = value[0] as u16;
+                    println!("Received notification: {:?}", value);
+                    if value.len() < 2 {
+                        continue;
+                    }
+                    let heart_rate = value[1];
                     app_clone.emit("heart-rate", heart_rate).unwrap();
                 }
             }
@@ -310,8 +315,14 @@ async fn disconnect(connection: State<'_, BleConnection>) -> Result<bool, String
 }
 
 #[tauri::command]
-fn get_widget_url() -> String {
-    "http://127.0.0.1:9918/".into()
+fn get_widget_url() -> Result<serde_json::Value, String> {
+    let widget_builtin_url = "http://127.0.0.1:9918/widget/builtin";
+    let widget_user_url = "http://127.0.0.1:9918/widget/user";
+    let widget_url = serde_json::json!({
+        "builtin": widget_builtin_url,
+        "user": widget_user_url
+    });
+    Ok(widget_url)
 }
 
 #[tokio::main]
@@ -341,22 +352,29 @@ async fn main() {
         .setup(move |app: &mut tauri::App| {
             let app_handle: tauri::AppHandle = app.handle().clone();
             std::thread::spawn(move || {
-                // 在子线程新建 tokio runtime
                 let rt = tokio::runtime::Runtime::new().unwrap();
                 rt.block_on(async move {
-                    // 取到打包后资源目录
-                    let widget_path: std::path::PathBuf = app_handle
+                    let widget_builtin_path = app_handle
                         .path()
-                        .resolve(
-                            "addons/brcat-widget-example",
-                            BaseDirectory::Resource,
-                        )
+                        .resolve("addons", BaseDirectory::Resource)
                         .unwrap();
-                    println!("widget_path: {:?}", widget_path);
-                    // 启动 HTTP 静态服务器，监听 127.0.0.1:1340
-                    warp::serve(warp::fs::dir(widget_path))
-                        .run(([127, 0, 0, 1], 9918))
-                        .await;
+                    let widget_user_path = app_handle
+                        .path()
+                        .resolve("plugins", BaseDirectory::AppData)
+                        .unwrap();
+
+                    // /widget/builtin/{any…} → addons/{any…}
+                    let widget_builtin_route = warp::path("widget")
+                        .and(warp::path("builtin"))
+                        .and(warp::fs::dir(widget_builtin_path.clone()));
+                    // /widget/user/{any…} → plugins/{any…}
+                    let widget_user_route = warp::path("widget")
+                        .and(warp::path("user"))
+                        .and(warp::fs::dir(widget_user_path.clone()));
+
+                    let routes = widget_builtin_route.or(widget_user_route);
+
+                    warp::serve(routes).run(([127, 0, 0, 1], 9918)).await;
                 });
             });
 

@@ -4,15 +4,10 @@ import { listen } from '@tauri-apps/api/event'
 import { Device, useBrcatStore } from './stores'
 import { useSnackbar, Vue3Snackbar } from 'vue3-snackbar'
 import { onMounted } from 'vue'
-import {
-  BaseDirectory,
-  exists,
-  readDir,
-  readTextFile,
-} from '@tauri-apps/plugin-fs'
-import { path } from '@tauri-apps/api'
+import { usePluginManager } from './stores/plugin'
 
 const store = useBrcatStore()
+const pluginMgr = usePluginManager()
 const snackbar = useSnackbar()
 
 invoke('register_central_events')
@@ -28,31 +23,9 @@ listen('device-disconnected', (_) => {
   })
 })
 
-// onMounted(async () => {
-//   const entries = await readDir('addons', {
-//     baseDir: BaseDirectory.Resource,
-//   })
-//   entries.forEach(async (entry) => {
-//     if (entry.isDirectory) {
-//       const manifestPath = await path.join(
-//         'addons',
-//         entry.name,
-//         'brcat-manifest.json',
-//       )
-//       console.log(`read manifestPath: ${manifestPath}`)
-
-//       if (!(await exists(manifestPath, { baseDir: BaseDirectory.Resource }))) {
-//         console.log(`[plugin] ❌ invalid plugin ${entry.name}`)
-//         return
-//       }
-//       console.log(`[plugin] ✅ ${entry.name} - ${manifestPath}`)
-//       const manifest = JSON.parse(
-//         await readTextFile(manifestPath, { baseDir: BaseDirectory.Resource }),
-//       )
-//       console.log(manifest)
-//     }
-//   })
-// })
+onMounted(() => {
+  pluginMgr.refreshPlugins()
+})
 </script>
 
 <template>

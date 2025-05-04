@@ -1,22 +1,37 @@
 <script lang="ts" setup>
-import { resolveResource } from '@tauri-apps/api/path'
-import { Effect, Window } from '@tauri-apps/api/window'
+import { Window } from '@tauri-apps/api/window'
 import { Webview } from '@tauri-apps/api/webview'
 import { useSnackbar } from 'vue3-snackbar'
 import { invoke } from '@tauri-apps/api/core'
-import { usePluginManager } from '../stores/plugin'
+import { PluginManifest, usePluginManager } from '../stores/plugin'
+import { storeToRefs } from 'pinia'
+import { getAllWebviewWindows } from '@tauri-apps/api/webviewWindow'
 
 const pluginMgr = usePluginManager()
+const { plugins } = storeToRefs(pluginMgr)
 const snackbar = useSnackbar()
 
-const createWindow = async () => {
-  // const url = await resolveResource('addons/widgets/example/widget.html')
-  const url: string = await invoke('get_widget_url')
+const getWidgetWindowName = (plugin: PluginManifest) => {
+  return `widget_${plugin.name}`
+}
+
+const onActivateWidget = async (plugin: PluginManifest) => {
+  const baseURL = await invoke<{
+    builtin: string
+    user: string
+  }>('get_widget_url')
+
+  console.log(baseURL)
+
+  const url = `${plugin.isBuiltIn ? baseURL.builtin : baseURL.user}/${
+    plugin.name
+  }/${plugin.widgetMeta?.index}`
+
   console.log(url)
 
-  const window = new Window('widget_example', {
-    width: 100,
-    height: 100,
+  const window = new Window(getWidgetWindowName(plugin), {
+    width: plugin.widgetMeta?.width || 100,
+    height: plugin.widgetMeta?.height || 100,
     resizable: false,
     decorations: false,
     transparent: true,
@@ -26,21 +41,47 @@ const createWindow = async () => {
   })
 
   window.once('tauri://created', () => {
-    const webview = new Webview(window, 'widget_example', {
+    const webview = new Webview(window, getWidgetWindowName(plugin), {
       url,
       x: 0,
       y: 0,
-      width: 100,
-      height: 100,
+      width: plugin.widgetMeta?.width || 100,
+      height: plugin.widgetMeta?.height || 100,
       transparent: true,
       acceptFirstMouse: true,
+    })
+    plugins.value = plugins.value.map((p) => {
+      if (p.name === plugin.name) {
+        p.isActivated = !p.isActivated
+      }
+      return p
     })
     webview.once('tauri://error', (e) => {
       snackbar.add({
         type: 'error',
-        text: `创建窗口失败: ${e.payload}`,
+        text: `创建 WebView 失败: ${e.payload}`,
       })
     })
+  })
+  window.once('tauri://error', (e) => {
+    snackbar.add({
+      type: 'error',
+      text: `创建窗口失败: ${e.payload}`,
+    })
+  })
+}
+
+const onCloseWidget = async (plugin: PluginManifest) => {
+  (await getAllWebviewWindows()).forEach((webview) => {
+    if (webview.label === getWidgetWindowName(plugin)) {
+      webview.destroy()
+      plugins.value = plugins.value.map((p) => {
+        if (p.name === plugin.name) {
+          p.isActivated = !p.isActivated
+        }
+        return p
+      })
+    }
   })
 }
 </script>
@@ -54,13 +95,24 @@ const createWindow = async () => {
       >
         Create Window
       </button> -->
-      <button
+      <!-- <button
         class="btn"
         @click="pluginMgr.refreshPlugins"
       >
         Refresh Plugins
       </button>
-      <pre>{{ pluginMgr.plugins }}</pre>
+      <pre>{{ pluginMgr.plugins }}</pre> -->
+      <div class="p-4">
+        <div class="flex flex-col gap-2 relative">
+          <WidgetListItem
+            v-for="(plugin, i) in plugins"
+            :key="i"
+            :plugin
+            @activate-widget="onActivateWidget"
+            @close-widget="onCloseWidget"
+          />
+        </div>
+      </div>
     </div>
   </PageContainer>
 </template>
