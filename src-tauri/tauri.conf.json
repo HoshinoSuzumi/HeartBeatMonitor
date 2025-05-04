@@ -9,19 +9,11 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "windows": [
-      {
-        "title": "Heartbeat Cat",
-        "minWidth": 800,
-        "minHeight": 500,
-        "width": 800,
-        "height": 500,
-        "userAgent": "Heartbeat Cat"
-      }
-    ],
+    "windows": [],
     "security": {
       "csp": "default-src 'self' http://127.0.0.1:9918; script-src 'self' http://127.0.0.1:9918 'unsafe-inline' 'unsafe-eval'; object-src 'none';"
-    }
+    },
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,

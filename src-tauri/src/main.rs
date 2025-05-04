@@ -7,9 +7,9 @@ use btleplug::api::{BDAddr, Central, Manager as _, Peripheral as _, ScanFilter};
 use btleplug::platform::{Adapter, Manager as BtleManager, Peripheral};
 use futures::StreamExt;
 use std::error::Error;
-use tauri::path::BaseDirectory;
 use std::sync::Arc;
-use tauri::{AppHandle, Emitter, Manager, State};
+use tauri::path::BaseDirectory;
+use tauri::{AppHandle, Emitter, Manager, State, TitleBarStyle, WebviewUrl, WebviewWindowBuilder};
 use tokio;
 use tokio::sync::Mutex;
 
@@ -326,6 +326,7 @@ async fn main() {
         .unwrap();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
         .manage(BleConnection::new(central))
         .invoke_handler(tauri::generate_handler![
             register_central_events,
@@ -346,7 +347,10 @@ async fn main() {
                     // 取到打包后资源目录
                     let widget_path: std::path::PathBuf = app_handle
                         .path()
-                        .resolve("addons/widgets/example/dist", BaseDirectory::Resource)
+                        .resolve(
+                            "addons/brcat-widget-example",
+                            BaseDirectory::Resource,
+                        )
                         .unwrap();
                     println!("widget_path: {:?}", widget_path);
                     // 启动 HTTP 静态服务器，监听 127.0.0.1:1340
@@ -355,6 +359,36 @@ async fn main() {
                         .await;
                 });
             });
+
+            let win_builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
+                .title("Heartbeat Cat")
+                .inner_size(800.0, 500.0)
+                .min_inner_size(800.0, 500.0)
+                .user_agent("Heartbeat Cat Desktop");
+
+            #[cfg(target_os = "macos")]
+            let win_builder = win_builder.title_bar_style(TitleBarStyle::Transparent);
+
+            let _ = win_builder.build().unwrap();
+
+            // #[cfg(target_os = "macos")]
+            // {
+            //     use cocoa::appkit::{NSColor, NSWindow};
+            //     use cocoa::base::{id, nil};
+
+            //     let ns_window = window.ns_window().unwrap() as id;
+            //     unsafe {
+            //         let bg_color = NSColor::colorWithRed_green_blue_alpha_(
+            //             nil,
+            //             50.0 / 255.0,
+            //             158.0 / 255.0,
+            //             163.5 / 255.0,
+            //             1.0,
+            //         );
+            //         ns_window.setBackgroundColor_(bg_color);
+            //     }
+            // }
+
             Ok(())
         })
         .run(tauri::generate_context!())

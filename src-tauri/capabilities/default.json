@@ -13,6 +13,23 @@
     ]
   },
   "permissions": [
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        {
+          "path": "$RESOURCE/addons"
+        },
+        {
+          "path": "$RESOURCE/addons/**"
+        },
+        {
+          "path": "$APPDATA/plugins"
+        },
+        {
+          "path": "$APPDATA/plugins/**"
+        }
+      ]
+    },
     "core:path:default",
     "core:event:allow-listen",
     "core:event:default",
@@ -20,6 +37,11 @@
     "core:window:default",
     "core:window:allow-start-dragging",
     "core:window:allow-create",
-    "core:window:allow-close"
+    "core:window:allow-close",
+    "fs:default",
+    "fs:allow-create",
+    "fs:allow-app-meta",
+    "fs:allow-app-meta-recursive",
+    "fs:allow-appdata-read-recursive"
   ]
 }

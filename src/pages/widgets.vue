@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { resolveResource } from '@tauri-apps/api/path'
-import { Window } from '@tauri-apps/api/window'
+import { Effect, Window } from '@tauri-apps/api/window'
 import { Webview } from '@tauri-apps/api/webview'
 import { useSnackbar } from 'vue3-snackbar'
 import { invoke } from '@tauri-apps/api/core'
+import { usePluginManager } from '../stores/plugin'
 
+const pluginMgr = usePluginManager()
 const snackbar = useSnackbar()
 
 const createWindow = async () => {
@@ -14,10 +16,11 @@ const createWindow = async () => {
 
   const window = new Window('widget_example', {
     width: 100,
-    height: 50,
+    height: 100,
     resizable: false,
     decorations: false,
-    fullscreen: false,
+    transparent: true,
+    shadow: false,
     alwaysOnTop: true,
     title: '桌面组件',
   })
@@ -27,8 +30,10 @@ const createWindow = async () => {
       url,
       x: 0,
       y: 0,
-      width: 300,
-      height: 300,
+      width: 100,
+      height: 100,
+      transparent: true,
+      acceptFirstMouse: true,
     })
     webview.once('tauri://error', (e) => {
       snackbar.add({
@@ -42,13 +47,20 @@ const createWindow = async () => {
 
 <template>
   <PageContainer title="桌面组件">
-    <div class="w-full h-full flex justify-center items-center bg-white">
-      <button
+    <div class="w-full h-full flex flex-col bg-white">
+      <!-- <button
         class="btn"
         @click="createWindow"
       >
         Create Window
+      </button> -->
+      <button
+        class="btn"
+        @click="pluginMgr.refreshPlugins"
+      >
+        Refresh Plugins
       </button>
+      <pre>{{ pluginMgr.plugins }}</pre>
     </div>
   </PageContainer>
 </template>

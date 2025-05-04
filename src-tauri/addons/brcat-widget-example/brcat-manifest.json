@@ -1,0 +1,15 @@
+{
+  "type": "widget",
+  "name": "brcat-widget-example",
+  "description": "A simple example of a widget using brcat",
+  "version": "0.0.1",
+  "author": {
+    "name": "Timothy Yin",
+    "email": "master@uniiem.com"
+  },
+  "widgetMeta": {
+    "index": "index.html",
+    "width": 100,
+    "height": 100
+  }
+}

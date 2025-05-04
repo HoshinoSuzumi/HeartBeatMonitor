@@ -11,7 +11,7 @@ edition = "2021"
 tauri-build = { version = "^2.2.0", features = [] }
 
 [dependencies]
-tauri = { version = "^2.5.1", features = ["unstable"] }
+tauri = { version = "^2.5.1", features = [ "macos-private-api", "unstable"] }
 warp = "0.3"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -20,7 +20,11 @@ tokio = { version = "1.38.0", features = ["full"] }
 futures = "0.3.30"
 uuid = "1.10.0"
 lazy_static = "1.5.0"
+tauri-plugin-fs = "2"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
+
+[target."cfg(target_os = \"macos\")".dependencies]
+cocoa = "0.26"
