@@ -1,8 +1,8 @@
 # HeartBeat Cat
 
-![Cover](https://socialify.git.ci/HoshinoSuzumi/HeartBeatMonitor/image?description=1&descriptionEditable=%E8%93%9D%E7%89%99%E5%BF%83%E7%8E%87%E5%B9%BF%E6%92%AD%E8%AE%BE%E5%A4%87%E9%87%87%E9%9B%86%E5%99%A8%E3%80%81%E6%A1%8C%E9%9D%A2%E6%82%AC%E6%B5%AE%E7%AA%97%E5%92%8C%E6%8E%A8%E6%B5%81%E6%8F%92%E4%BB%B6&font=KoHo&issues=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2FHoshinoSuzumi%2FHoshinoSuzumi%2Fmaster%2Fimages%2F202209282211354.png&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Light)
+![Cover](https://socialify.git.ci/HoshinoSuzumi/HeartBeatCat/image?description=1&descriptionEditable=%E8%93%9D%E7%89%99%E5%BF%83%E7%8E%87%E5%B9%BF%E6%92%AD%E8%AE%BE%E5%A4%87%E9%87%87%E9%9B%86%E5%99%A8%E3%80%81%E6%A1%8C%E9%9D%A2%E6%82%AC%E6%B5%AE%E7%AA%97%E5%92%8C%E6%8E%A8%E6%B5%81%E6%8F%92%E4%BB%B6&font=KoHo&issues=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2FHoshinoSuzumi%2FHoshinoSuzumi%2Fmaster%2Fimages%2F202209282211354.png&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Light)
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/HoshinoSuzumi/HeartBeatMonitor)](https://github.com/HoshinoSuzumi/HeartBeatMonitor/releases/latest)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/HoshinoSuzumi/HeartBeatCat)](https://github.com/HoshinoSuzumi/HeartBeatCat/releases/latest)
 [![wakatime](https://wakatime.com/badge/user/589c46ee-6ba6-403c-bc9f-3a7aef5b206c/project/018bd5e5-0ab3-4762-a60a-220e0efa2c51.svg)](https://wakatime.com/badge/user/589c46ee-6ba6-403c-bc9f-3a7aef5b206c/project/018bd5e5-0ab3-4762-a60a-220e0efa2c51)
 
 蓝牙心率广播设备采集器、桌面悬浮窗和**推流插件**[^WIP]
