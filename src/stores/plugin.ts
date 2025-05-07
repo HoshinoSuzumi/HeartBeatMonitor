@@ -6,6 +6,7 @@ import { ref } from "vue";
 export interface PluginManifest {
   type: 'widget' | 'extension' | 'theme';
   isBuiltIn?: boolean;
+  id: string;
   name: string;
   description?: string;
   version: string;
@@ -42,7 +43,7 @@ export const usePluginManager = defineStore('pluginManager', () => {
         const manifestPath = await path.join(
           searchPath,
           entry.name,
-          'brcat-manifest.json',
+          'hbcat-manifest.json',
         );
 
         if (!(await exists(manifestPath, { baseDir }))) continue;
@@ -64,7 +65,7 @@ export const usePluginManager = defineStore('pluginManager', () => {
   const refreshPlugins = async () => {
     plugins.value = []
 
-    const builtinPlugins = (await _getPluginsFrom(BaseDirectory.Resource, 'addons')).map(p => {
+    const builtinPlugins = (await _getPluginsFrom(BaseDirectory.Resource, 'plugins')).map(p => {
       return {
         ...p,
         isBuiltIn: true,
@@ -73,7 +74,7 @@ export const usePluginManager = defineStore('pluginManager', () => {
     const userPlugins = await _getPluginsFrom(BaseDirectory.AppData, 'plugins')
 
     for (const plugin of [...builtinPlugins, ...userPlugins]) {
-      const index = plugins.value.findIndex(p => p.name === plugin.name)
+      const index = plugins.value.findIndex(p => p.id === plugin.id)
       if (index === -1) {
         plugins.value.push(plugin)
       } else {

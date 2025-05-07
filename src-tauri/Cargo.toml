@@ -21,6 +21,8 @@ futures = "0.3.30"
 uuid = "1.10.0"
 lazy_static = "1.5.0"
 tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-opener = "2"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

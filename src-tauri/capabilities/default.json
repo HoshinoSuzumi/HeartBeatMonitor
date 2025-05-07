@@ -17,10 +17,10 @@
       "identifier": "fs:scope",
       "allow": [
         {
-          "path": "$RESOURCE/addons"
+          "path": "$RESOURCE/plugins"
         },
         {
-          "path": "$RESOURCE/addons/**"
+          "path": "$RESOURCE/plugins/**"
         },
         {
           "path": "$APPDATA/plugins"
@@ -43,6 +43,16 @@
     "fs:allow-create",
     "fs:allow-app-meta",
     "fs:allow-app-meta-recursive",
-    "fs:allow-appdata-read-recursive"
+    "fs:allow-appdata-read-recursive",
+    "shell:default",
+    "opener:default",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        {
+          "path": "$APPDATA/plugins"
+        }
+      ]
+    }
   ]
 }

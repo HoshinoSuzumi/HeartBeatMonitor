@@ -27,7 +27,7 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "addons"
+      "plugins"
     ],
     "windows": {
       "nsis": {

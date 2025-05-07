@@ -1,8 +1,9 @@
 {
   "type": "widget",
-  "name": "brcat-widget-example",
+  "id": "hbcat-widget-example",
+  "name": "HeartBeat Cat 示例插件",
   "description": "A simple example of a widget using brcat",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "author": {
     "name": "Timothy Yin",
     "email": "master@uniiem.com"

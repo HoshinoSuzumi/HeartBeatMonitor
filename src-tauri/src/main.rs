@@ -9,7 +9,7 @@ use futures::StreamExt;
 use std::error::Error;
 use std::sync::Arc;
 use tauri::path::BaseDirectory;
-use tauri::{AppHandle, Emitter, Manager, State, TitleBarStyle, WebviewUrl, WebviewWindowBuilder};
+use tauri::{AppHandle, Emitter, Manager, State, WebviewUrl, WebviewWindowBuilder};
 use tokio;
 use tokio::sync::Mutex;
 use warp::Filter;
@@ -337,6 +337,8 @@ async fn main() {
         .unwrap();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
         .manage(BleConnection::new(central))
         .invoke_handler(tauri::generate_handler![
@@ -356,14 +358,14 @@ async fn main() {
                 rt.block_on(async move {
                     let widget_builtin_path = app_handle
                         .path()
-                        .resolve("addons", BaseDirectory::Resource)
+                        .resolve("plugins", BaseDirectory::Resource)
                         .unwrap();
                     let widget_user_path = app_handle
                         .path()
                         .resolve("plugins", BaseDirectory::AppData)
                         .unwrap();
 
-                    // /widget/builtin/{any…} → addons/{any…}
+                    // /widget/builtin/{any…} → plugins/{any…}
                     let widget_builtin_route = warp::path("widget")
                         .and(warp::path("builtin"))
                         .and(warp::fs::dir(widget_builtin_path.clone()));
@@ -383,6 +385,9 @@ async fn main() {
                 .inner_size(800.0, 500.0)
                 .min_inner_size(800.0, 500.0)
                 .user_agent("Heartbeat Cat Desktop");
+
+            #[cfg(target_os = "macos")]
+            use Tauri::TitleBarStyle;
 
             #[cfg(target_os = "macos")]
             let win_builder = win_builder.title_bar_style(TitleBarStyle::Transparent);

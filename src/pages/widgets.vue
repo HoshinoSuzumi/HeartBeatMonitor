@@ -6,13 +6,15 @@ import { invoke } from '@tauri-apps/api/core'
 import { PluginManifest, usePluginManager } from '../stores/plugin'
 import { storeToRefs } from 'pinia'
 import { getAllWebviewWindows } from '@tauri-apps/api/webviewWindow'
+import { appDataDir, resolve } from '@tauri-apps/api/path'
+import { openPath } from '@tauri-apps/plugin-opener'
 
 const pluginMgr = usePluginManager()
 const { plugins } = storeToRefs(pluginMgr)
 const snackbar = useSnackbar()
 
 const getWidgetWindowName = (plugin: PluginManifest) => {
-  return `widget_${plugin.name}`
+  return `widget_${plugin.id}`
 }
 
 const onActivateWidget = async (plugin: PluginManifest) => {
@@ -24,7 +26,7 @@ const onActivateWidget = async (plugin: PluginManifest) => {
   console.log(baseURL)
 
   const url = `${plugin.isBuiltIn ? baseURL.builtin : baseURL.user}/${
-    plugin.name
+    plugin.id
   }/${plugin.widgetMeta?.index}`
 
   console.log(url)
@@ -37,7 +39,7 @@ const onActivateWidget = async (plugin: PluginManifest) => {
     transparent: true,
     shadow: false,
     alwaysOnTop: true,
-    title: '桌面组件',
+    title: `HBCat 组件 - ${plugin.name}`,
   })
 
   window.once('tauri://created', () => {
@@ -72,11 +74,11 @@ const onActivateWidget = async (plugin: PluginManifest) => {
 }
 
 const onCloseWidget = async (plugin: PluginManifest) => {
-  (await getAllWebviewWindows()).forEach((webview) => {
+  ;(await getAllWebviewWindows()).forEach((webview) => {
     if (webview.label === getWidgetWindowName(plugin)) {
       webview.destroy()
       plugins.value = plugins.value.map((p) => {
-        if (p.name === plugin.name) {
+        if (p.id === plugin.id) {
           p.isActivated = !p.isActivated
         }
         return p
@@ -84,10 +86,43 @@ const onCloseWidget = async (plugin: PluginManifest) => {
     }
   })
 }
+
+const onOpenPluginDir = async () => {
+  const appDataDirPath = await appDataDir()
+  const pluginDirPath = await resolve(
+    appDataDirPath,
+    'plugins'
+  )
+
+  openPath(pluginDirPath).catch((e) => {
+    snackbar.add({
+      type: 'error',
+      text: `打开插件目录失败: ${e}`,
+    })
+  })
+}
 </script>
 
 <template>
   <PageContainer title="桌面组件">
+    <template #actions>
+      <div class="flex items-center gap-2">
+        <DevOnly>
+          <button
+            class="btn outline"
+            @click="pluginMgr.refreshPlugins"
+          >
+            刷新组件
+          </button>
+        </DevOnly>
+        <button
+          class="btn outline"
+          @click="onOpenPluginDir"
+        >
+          打开插件目录
+        </button>
+      </div>
+    </template>
     <div class="w-full h-full flex flex-col bg-white">
       <!-- <button
         class="btn"
