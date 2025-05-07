@@ -1,10 +1,10 @@
 {
   "productName": "HeartBeatCat",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "identifier": "ga.bh8.heartbeat-cat",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm build",
+    "beforeBuildCommand": "pnpm build && pnpm sync-version",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../dist"
   },
