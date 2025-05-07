@@ -3,8 +3,13 @@ import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
 import { Device, useBrcatStore } from './stores'
 import { useSnackbar, Vue3Snackbar } from 'vue3-snackbar'
-import { onMounted } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import { usePluginManager } from './stores/plugin'
+import { CloseRequestedEvent } from '@tauri-apps/api/window'
+import { window } from '@tauri-apps/api'
+import { Menu } from '@tauri-apps/api/menu'
+import { TrayIcon, TrayIconOptions } from '@tauri-apps/api/tray'
+import { defaultWindowIcon } from '@tauri-apps/api/app'
 
 const store = useBrcatStore()
 const pluginMgr = usePluginManager()
@@ -25,6 +30,72 @@ listen('device-disconnected', (_) => {
 
 onMounted(() => {
   pluginMgr.refreshPlugins()
+})
+
+onBeforeMount(async () => {
+  const mainWindow = (await window.getAllWindows()).find(
+    (w) => w.label === 'main',
+  )
+
+  mainWindow?.onCloseRequested((event) => {
+    event.preventDefault()
+    mainWindow.hide()
+  })
+
+  const showMainWindow = async () => {
+    if (mainWindow) {
+      mainWindow.show()
+      if (await mainWindow.isMinimized()) mainWindow.unminimize()
+      if (!(await mainWindow.isFocused())) mainWindow.setFocus()
+    } else {
+      // await message('主窗口未找到，请重启应用', {
+      //   title: '程序异常',
+      //   kind: 'error',
+      // })
+    }
+  }
+
+  // tray menu
+  const trayMenu = await Menu.new({
+    items: [
+      {
+        id: 'show',
+        text: '显示主窗口',
+        action: async () => {
+          await showMainWindow()
+        },
+      },
+      {
+        item: 'Separator',
+      },
+      {
+        id: 'quit',
+        text: '退出 HBCat',
+        accelerator: 'CmdOrCtrl+Q',
+        action: async () => {
+          await mainWindow?.destroy()
+        },
+      },
+    ],
+  })
+
+  // tray options
+  const trayOptions: TrayIconOptions = {
+    menu: trayMenu,
+    id: 'hbcat',
+    showMenuOnLeftClick: false,
+    icon: (await defaultWindowIcon()) || undefined,
+    tooltip: 'HeartBeat Cat',
+    action: (event) => {
+      switch (event.type) {
+        case 'DoubleClick':
+          showMainWindow()
+          break
+      }
+    },
+  }
+
+  await TrayIcon.new(trayOptions)
 })
 </script>
 

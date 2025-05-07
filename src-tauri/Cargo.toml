@@ -11,7 +11,7 @@ edition = "2021"
 tauri-build = { version = "^2.2.0", features = [] }
 
 [dependencies]
-tauri = { version = "^2.5.1", features = [ "macos-private-api", "unstable"] }
+tauri = { version = "^2.5.1", features = [ "tray-icon", "macos-private-api", "unstable"] }
 warp = "0.3"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
