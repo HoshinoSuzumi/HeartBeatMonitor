@@ -73,6 +73,11 @@ onBeforeMount(async () => {
         accelerator: 'CmdOrCtrl+Q',
         action: async () => {
           await mainWindow?.destroy()
+          window.getAllWindows().then((windows) => {
+            windows.forEach((w) => {
+              if (w.label !== 'main') w.destroy()
+            })
+          })
         },
       },
     ],

@@ -336,7 +336,24 @@ async fn main() {
         .nth(0)
         .unwrap();
 
-    tauri::Builder::default()
+    let mut builder = tauri::Builder::default();
+
+    #[cfg(desktop)]
+    {
+        builder = builder.plugin(tauri_plugin_single_instance::init(|app, _, _| {
+            if let Some(window) = app.get_window("main") {
+                if !window.is_visible().unwrap_or(true) {
+                    let _ = window.show();
+                }
+                if window.is_minimized().unwrap_or(false) {
+                    let _ = window.unminimize();
+                }
+                let _ = window.set_focus();
+            }
+        }));
+    }
+
+    builder
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
